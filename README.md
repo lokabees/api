@@ -15,15 +15,15 @@
   <p align="center">
     Lokabees backend. 
 
-    <br />
-    <a href="https://github.com/lokabees/api"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/lokabees/api">View Demo</a>
-    ·
-    <a href="https://github.com/lokabees/api">Report Bug</a>
-    ·
-    <a href="https://github.com/lokabees/api">Request Feature</a>
+  <br />
+  <a href="https://github.com/lokabees/api"><strong>Explore the docs »</strong></a>
+  <br />
+  <br />
+  <a href="https://github.com/lokabees/api">View Demo</a>
+  ·
+  <a href="https://github.com/lokabees/api/issues">Report Bug</a>
+  ·
+  <a href="https://github.com/lokabees/api/issues">Request Feature</a>
   </p>
 </p>
 
@@ -62,7 +62,7 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple example steps. 
 
 ### Prerequisites
 
@@ -70,20 +70,16 @@ This is an example of how to list things you need to use the software and how to
 * [yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 * [mongoDB](https://docs.mongodb.com/manual/installation/)
 
-The easiest way to install mongoDB is with docker. A simple docker-compose file would look like this:
-```yml
-version: "3.3"
-services:
-    mongo:
-        image: mongo:4.2.5
-        ports:
-            - "27017:27017"
+The easiest way to install mongoDB is with docker: 
+```sh
+docker pull mongo
 ```
+
 ### Installation
 
 2. Clone the repo
 ```sh
-git clone git@github.com:tguelcan/restexpress.git
+git clone git@github.com:lokabees/api.git
 ```
 3. Install dependencies
 ```sh
@@ -211,7 +207,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Jonas Scholz - [@jscholz42](https://twitter.com/jscholz42)
 
-Tayfun Gülcan - [@Tayfuuu](https://twitter.com/Tayfuuu)
+Tayfun Gülcan - [@Tayfuuu](https://twitter.com/Tayfuuu) 
 
 
 <!-- ACKNOWLEDGEMENTS -->
