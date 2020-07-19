@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>RESTexpress</title>
+    <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css" />
+  </head>
+  <body>
+    <div id="restexpress"></div>
+    <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
+    <script>
+      new Docute({
+        target: "#restexpress",
+        darkThemeToggler: true,
+        sidebar: [
+          {
+            title: "About The Project",
+            link: "/#about-the-project",
+          },
+          // A sidebar item, with child links
+          {
+            title: "Getting Started",
+            children: [
+              {
+                title: "Let's begin!",
+                link: "/#getting-started",
+              },
+              {
+                title: "Prerequisites",
+                link: "/#prerequisites",
+              },
+              {
+                title: "Installation",
+                link: "/#installation",
+              },
+            ],
+          },
+          {
+            title: "Usage",
+            children: [
+              {
+                title: "How to use",
+                link: "/#usage",
+              },
+              {
+                title: "Add mongoose plugins",
+                link: "/#mongoose-plugins",
+              },
+              {
+                title: "Add endpoint (api)",
+                link: "/#adding-routes",
+              },
+              {
+                title: "Accesscontrol (expressjs)",
+                link: "/src/services/express/README",
+              }
+            ],
+          },
+          {
+            title: "References",
+            children: [
+              {
+                title: "Api",
+                link: "/src/api/README",
+              },
+              {
+                title: "Services",
+                link: "/src/services/README",
+              },
+            ],
+          },
+          {
+            title: "Deployment",
+            children: [
+              {
+                title: "Deployment",
+                link: "/#deployment",
+              },
+            ],
+          },
+          {
+            title: "i18n",
+            link: "locales/README",
+          },
+          {
+            title: "license",
+            link: "/LICENSE",
+          },
+          // An external link
+          {
+            title: "GitHub",
+            link: "https://github.com/tguelcan/restexpress",
+          },
+        ],
+      });
+    </script>
+  </body>
+</html>
