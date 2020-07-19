@@ -10,10 +10,10 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <h3 align="center">Lokabees</h3>
+  <h3 align="center">Lokabees Backend</h3>
 
   <p align="center">
-    Lokabees backend. 
+    Lokabees RESTful API. 
 
   <br />
   <a href="https://github.com/lokabees/api"><strong>Explore the docs »</strong></a>
