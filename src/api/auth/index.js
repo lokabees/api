@@ -49,9 +49,9 @@ const router = new Router()
  *        "400":
  *          description: Invalid Body
  *        "401":
- *          description: Missing masterkey
+ *          description: Missing masterkey, wrong password/email combination or email not verified
  *        "403":
- *          description: Missing permissions (user or password wrong or user is not verified)
+ *          description: Missing permissions (ACL)
  *        "500":
  *          description: Oh boi
  */
