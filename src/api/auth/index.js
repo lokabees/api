@@ -161,7 +161,7 @@ router.post('/logout/all', logoutAll)
 router.post(
     '/:provider',
     body({
-        token: {
+        accessToken: {
             type: String,
             required: true
         }

@@ -48,11 +48,11 @@ export const authenticate = async ({ body: { email, password }, device }, res, n
 export const providerAuthenticate = async ({ body, params }, res, next) => {
     // Pass values
     const { provider } = params
-    const { token } = body
+    const { accessToken } = body
 
     try {
         // Get user from external provider
-        const providerUser = await providerAuth[provider](token)
+        const providerUser = await providerAuth[provider](accessToken)
         const user = await User.createFromService(providerUser)
 
         // Sign in user
