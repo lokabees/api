@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
 import { authenticate, providerAuthenticate, logout, logoutAll } from './controller'
-import { masterman, doorman } from '~/services/auth'
+import { masterman } from '~/services/auth'
 
 /**
  * @swagger
