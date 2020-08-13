@@ -1,6 +1,6 @@
 import { User } from '.'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT, INTERNAL_SERVER_ERROR } from 'http-status-codes'
-import { sendVerificationMail } from 's/sendgrid'
+import { sendVerification } from 's/mail'
 import { Verification } from 'a/verification'
 import { errorHandler } from 's/response'
 
@@ -40,7 +40,7 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
 
         const { token } = await Verification.create({ user: doc._id })
 
-        await sendVerificationMail({ to: body.email, name: body.name, token })
+        await sendVerification({ to: body.email, name: body.name, token })
 
         res.status(CREATED).json(doc.filter({ role: user?.role, method }))
     } catch (error) {

@@ -43,7 +43,15 @@ const config = {
                 welcome: 'd-e348a8a8a2f04a2e871e6fc6c26a5cfb',
                 forgot: 'd-ac2e091839ab4112b1be2ff7d9d2d6d3'
             },
-            defaultEmail: 'no-reply@your-website.com'
+            defaultEmail: 'no-reply@lokabees.com'
+        },
+        postmark: {
+            apiKey: requireProcessEnv('POSTMARK_KEY'),
+            emailTemplates: {
+                welcome: 'd-e348a8a8a2f04a2e871e6fc6c26a5cfb',
+                forgot: 'd-ac2e091839ab4112b1be2ff7d9d2d6d3'
+            },
+            defaultEmail: 'no-reply@lokabees.com'
         },
         cloudinaryConfig: {
             cloud_name: requireProcessEnv('CLOUDINARY_CLOUD_NAME'),

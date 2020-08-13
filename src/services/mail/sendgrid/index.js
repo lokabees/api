@@ -1,4 +1,4 @@
-import sendgridMail from '@sendgrid/mail'
+/* import sendgridMail from '@sendgrid/mail'
 import { sendgrid, env, ip, port, apiRoot } from '~/config'
 
 const { apiKey, defaultEmail, emailTemplates } = sendgrid
@@ -11,11 +11,6 @@ const mail_settings = {
     }
 }
 
-export const sendDynamicMail = ({ from = defaultEmail, to, templateId, dynamic_template_data }) =>
-    sendgridMail.send({ to, from, templateId, dynamic_template_data, mail_settings })
-
-
-
 const passwordResetLink = token =>
     env !== 'production' ?
         `http://${ip}:${port}${apiRoot}/password-reset/${token}`
@@ -26,6 +21,7 @@ const verificationLink = token =>
         ? `http://${ip}:${port}${apiRoot}/verification/${token}`
         : `${process.env.APP_URL}/account/verify/${token}`
 
+        // DEPRECATED
 export const sendVerificationMail = ({ to, name, token }) =>
     sendgridMail.send({
         to,
@@ -38,7 +34,7 @@ export const sendVerificationMail = ({ to, name, token }) =>
         mail_settings
     })
 
-
+// DEPRECATED
 export const sendPasswordResetMail = ({ to, name, token }) =>
     sendgridMail.send({
         to,
@@ -50,3 +46,4 @@ export const sendPasswordResetMail = ({ to, name, token }) =>
         },
         mail_settings
     })
+ */
