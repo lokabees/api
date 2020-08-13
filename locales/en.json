@@ -8,5 +8,6 @@
 	"not-found": "This resource could not be found",
 	"missing-permission": "You do not have the permission to access this resource",
 	"missing-or-wrong-parameters": "Your request contains invalid parameters",
-	"missing-files": "File is missing"
+	"missing-files": "File is missing",
+	"masterkey-error": "Masterkey is missing or invalid"
 }

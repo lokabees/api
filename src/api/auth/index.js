@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
 import { authenticate, providerAuthenticate, logout, logoutAll } from './controller'
-import { masterman, doorman } from '~/services/auth'
+import { masterman } from '~/services/auth'
 
 /**
  * @swagger
@@ -49,9 +49,9 @@ const router = new Router()
  *        "400":
  *          description: Invalid Body
  *        "401":
- *          description: Missing masterkey
+ *          description: Missing masterkey, wrong password/email combination or email not verified
  *        "403":
- *          description: Missing permissions (user or password wrong or user is not verified)
+ *          description: Missing permissions (ACL)
  *        "500":
  *          description: Oh boi
  */
@@ -161,7 +161,7 @@ router.post('/logout/all', logoutAll)
 router.post(
     '/:provider',
     body({
-        token: {
+        accessToken: {
             type: String,
             required: true
         }

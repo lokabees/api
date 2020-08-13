@@ -65,4 +65,4 @@ export const doorman = eJWT({ ...jwtConfig, ...{ isRevoked: isRevokedCallback } 
  *       in: query
  *       name: master
  */
-export const masterman = () => (req, res, next) =>  masterKey === extractMaster(req) ? next() : res.status(401).end()
+export const masterman = () => (req, res, next) => masterKey === extractMaster(req) ? next() : res.status(401).json({ valid: false, message: res.__('masterkey-error') })

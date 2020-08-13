@@ -71,7 +71,7 @@ const config = {
                 },
                 servers: [
                     {
-                        url: 'http://localhost:8080/'
+                        url: `http://localhost:${process.env.PORT || 9000}`
                     }
                 ]
             },
