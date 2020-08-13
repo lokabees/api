@@ -3,17 +3,46 @@ import mongoose, { Schema } from 'mongoose'
 import { paginate, filter, ownership } from 's/mongoose'
 import rules from './acl'
 import userAcl from 'a/user/acl'
+import { facebookValidator, instagramValidator } from '~/utils/validator'
 
-// Data schema for shop
-
-const dataSchema = new Schema(
+// schema for shop
+const shopSchema = new Schema(
     {
         name: {
             type: String,
             required: true,
         },
-        // TODO: how tf do we model contact?
-        contact: { },
+        slug: {
+            type: String, 
+            unique: true,
+            default: () => slugify(this.name, { lower: true })
+        },
+        contact: {
+            website: {
+                type: String,
+                validate: {
+                    validator: value => websiteValidator.test(value),
+                    message: props => 'Website URI is invalid'
+                }
+            },
+            facebook: {
+                type: String,
+                validate: {
+                    validator: value => facebookValidator.test(value),
+                    message: props => 'Facebook URI is invalid'
+                }
+            },
+            instagram: {
+                type: String,
+                validate: {
+                    validator: value => instagramValidator.test(value),
+                    message: props => 'Instagram URI is invalid'
+                }
+            },
+            phone: {
+                type: String
+            },
+        },
         description: {
             type: String,
             required: true // validation?
@@ -33,12 +62,6 @@ const dataSchema = new Schema(
             state: { type: String, required: true },
             street: { type: String, required: true },
             postalCode: { type: Number, required: true },
-        },
-        // TODO: Remove content and the corresponding tests / controller / whateve
-        content: {
-            type: String,
-            required: true,
-            minlength: 2,
         },
         author: {
             type: 'ObjectId',
@@ -64,11 +87,11 @@ const dataSchema = new Schema(
 )
 
 
-dataSchema.plugin(filter, { rules })
-dataSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })
-dataSchema.plugin(ownership)
+shopSchema.plugin(filter, { rules })
+shopSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })
+shopSchema.plugin(ownership)
 
-const model = mongoose.model('Shop', dataSchema)
+const model = mongoose.model('Shop', shopSchema)
 model.swaggerSchema = m2s(model)
 export const schema = model.schema
 
