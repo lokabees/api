@@ -5,12 +5,13 @@ import { Router } from 'express'
 import { sign } from 's/auth'
 import { addAuthor } from 's/request'
 import User from 'a/user/model'
-import { Shop as Data } from 'a/shop'
+import { Shop } from 'a/shop'
 import { apiRoot, masterKey } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
 
 let adminUser,
     adminToken,
+    shop,
     defaultUser,
     defaultToken,
     guestData,
@@ -20,53 +21,44 @@ let adminUser,
 
 beforeEach(async () => {
 
-    adminUser = await User.create({
-        name: 'Marty',
-        email: 'marty@getit.social',
-        password: 'SuperPasswort123?!',
-        role: 'admin'
-    })
-
     defaultUser = await User.create({
         name: 'Marty',
-        email: 'marty0@getit.social',
+        email: 'marty0@getit.lolsocial',
         password: 'SuperPasswort123?!',
         role: 'user'
     })
 
-    guestData = await Data.create({ content: 'yeet' })
-    userData = await Data.create({ content: 'yoot', author: defaultUser._id })
-    adminData = await Data.create({ content: 'yuut', author: adminUser._id })
-    // Sign in user
-    adminToken = (await sign(adminUser)).token
+    shop = await Shop.create({
+        name: 'Claudias Kekseladen',
+        contact: {
+            website: 'https://www.kekse.de',
+            facebook: 'https://facebook.com/claudias_kekseladen',
+            instagram: 'https://instagram.com/claudias_kekseladen',
+            phone: '+49 1234 12345',
+            email: 'claudia@kekse.de',   
+        },
+        description: 'Kekse sind toll.',
+        address: {
+            locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+        },
+        author: defaultUser,
+        published: false
+    })
+    
     defaultToken = (await sign(defaultUser)).token
-
-    const datas = Array(100)
-
-    for (let index = 0; index < datas.length; index += 1) {
-        datas[index] = new Data({ content: 'hello world' })
-    }
-
-    await Data.insertMany(datas)
-
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
+   
     // INDEX
     test(`GET ${apiRoot}/${apiEndpoint} ADMIN OK`, async () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}`)
 
         expect(status).toBe(OK)
-
-        // check if view worked, pagination gets tested separately
-        const { rows } = body
-        const [ first ] = rows
-        const keys = Object.keys(first)
-        expect(keys).toEqual(expect.arrayContaining(['content']))
-    })
-
+     })
+ /*
     test(`GET ${apiRoot}/${apiEndpoint} ADMIN OK`, async () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}`)
@@ -159,19 +151,47 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         const keys = Object.keys(body)
         expect(keys).toEqual(expect.arrayContaining(['content', 'author']))
     })
-
-    test(`POST ${apiRoot}/${apiEndpoint}/ ADMIN CREATED`, async () => {
+    */
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ content: 'muh first post'})
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Claudias Kekseladen',
+                contact: {
+                    website: 'https://www.kekse.de',
+                    facebook: 'https://facebook.com/claudias_kekseladen',
+                    instagram: 'https://instagram.com/claudias_kekseladen',
+                    phone: '+49 1234 12345',
+                    email: 'claudia@kekse.de',   
+                },
+                description: 'Kekse sind toll.',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                author: defaultUser,
+                published: true
+            })
+
+        // make sure here api request worked
+        expect(body.address.label).not.toBeUndefined()
+        expect(body.address.city).not.toBeUndefined()
+        expect(body.address.country).not.toBeUndefined()
+        expect(body.address.county).not.toBeUndefined()
+        expect(body.address.district).not.toBeUndefined()
+        expect(body.address.houseNumber).not.toBeUndefined()
+        expect(body.address.locationId).not.toBeUndefined()
+        expect(body.address.state).not.toBeUndefined()
+        expect(body.address.street).not.toBeUndefined()
+        expect(body.address.postalCode).not.toBeUndefined()
+        expect(body.address.displayPosition).not.toBeUndefined()
+
+        // slug got generated
+        expect(body.slug).not.toBeUndefined()
 
         expect(status).toBe(CREATED)
-
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content', 'author']))
     })
-
+    /*
     // UPDATE
     test(`PUT ${apiRoot}/${apiEndpoint}/:id GUEST FORBIDDEN`, async () => {
         const { status } = await request(server)
@@ -374,5 +394,5 @@ describe(`TEST ${apiRoot}/${apiEndpoint} PAGINATION`,  () => {
         expect(nextPage).toBe(null)
 
     })
-
+ */
 })

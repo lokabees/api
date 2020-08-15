@@ -1,6 +1,6 @@
 {
     "email-conflict": "Es existiert bereits ein Nutzer mit dieser E-Mail Adresse",
-    "wrong-credentials": "Wrong password or E-Mail",
+    "wrong-credentials": "Falsches Passwort oder E-Mail",
     "user-not-found": "Dieser Nutzer wurde nicht gefunden",
     "unverified": "Deine E-Mail ist nicht verifiziert",
     "error": "Irgendwas ist bei uns schief gelaufen. Sorry!",

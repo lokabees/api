@@ -4,9 +4,9 @@ const permissions = [
         permissions: [
             {
                 resource: 'shops/*',
-                methods: ['GET', 'POST'],
+                methods: ['GET'],
                 action: 'allow',
-                view: ['content', 'author', 'author.name', 'author.email']
+                view: ['name', 'slug', 'contact', 'description', 'address']
             }
         ]
     },
@@ -17,7 +17,7 @@ const permissions = [
                 resource: 'shops/*',
                 methods: ['GET', 'POST', 'PUT', 'DELETE'],
                 action: 'allow',
-                view: ['content', 'author', 'author.name', 'author.email']
+                view: ['name', 'slug', 'contact', 'description', 'address', 'author', 'published']
             }
         ]
     },
@@ -28,7 +28,7 @@ const permissions = [
                 resource: 'shops/*',
                 methods: ['GET', 'POST', 'PUT', 'DELETE'],
                 action: 'allow',
-                view: ['content', 'author', 'author.name', 'author.email']
+                view: ['name', 'slug', 'contact', 'description', 'address', 'author', 'published']
             }
         ]
     }

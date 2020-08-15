@@ -3,8 +3,11 @@ import mongoose, { Schema } from 'mongoose'
 import { paginate, filter, ownership } from 's/mongoose'
 import rules from './acl'
 import userAcl from 'a/user/acl'
-import { facebookValidator, instagramValidator } from '~/utils/validator'
-
+import slugify from 'slugify'
+import { facebookValidator, instagramValidator, emailValidator, websiteValidator } from '~/utils/validator'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { hereConfig } from '~/config'
+import request from 'request-promise'
 // schema for shop
 const shopSchema = new Schema(
     {
@@ -14,8 +17,7 @@ const shopSchema = new Schema(
         },
         slug: {
             type: String, 
-            unique: true,
-            default: () => slugify(this.name, { lower: true })
+            unique: true
         },
         contact: {
             website: {
@@ -40,8 +42,19 @@ const shopSchema = new Schema(
                 }
             },
             phone: {
-                type: String
+                type: String,
+                validate: {
+                    validator: value => parsePhoneNumberFromString(value).isValid(),
+                    message: props => 'Phone is invalid'
+                }  
             },
+            email: {
+                type: String,
+                validate: {
+                    validator: value => emailValidator.test(value),
+                    message: props => 'Email is invalid'
+                }
+            }
         },
         description: {
             type: String,
@@ -62,11 +75,21 @@ const shopSchema = new Schema(
             state: { type: String, required: true },
             street: { type: String, required: true },
             postalCode: { type: Number, required: true },
+            displayPosition: {
+                latitude: {
+                    type: Number,
+                    required: true
+                },
+                longitude: {
+                    type: Number,
+                    required: true
+                }
+            }
         },
         author: {
             type: 'ObjectId',
             ref: 'User',
-            required: false,
+            required: true,
             description: 'author is the user who created the shop, not necessarily the shop owner'
         },
         published: {
@@ -86,6 +109,63 @@ const shopSchema = new Schema(
     }
 )
 
+// Find a unique slug if name changed
+shopSchema.pre('validate', async function(next) {
+    
+    if (!this.isModified('name')) {
+        return next()
+    }
+
+    let slug = slugify(this.name, { lower: true })
+    let slugExists = await model.exists({ slug })
+    while (slugExists) {
+        const rnd = Math.round(Math.random() * 1000)
+        slug = slugify(this.name + rnd, { lower: true })
+        slugExists = await model.exists({ slug })
+    }
+    this.slug = slug
+
+    return next()
+})
+
+// request adress data if locationId changed
+shopSchema.pre('validate', async function(next) {
+    if (!this.isModified('address.locationId')) {
+        return next()
+    }
+
+    // HERE API request
+    try {
+        const res = await request({
+            uri: `https://geocoder.ls.hereapi.com/6.2/geocode.json?locationid=${this.address.locationId}&jsonattributes=1&gen=9&apiKey=${hereConfig.apiKey}`,
+            json: true,
+        })
+        const {
+            response: {
+                view: [
+                    {
+                        result: [
+                            {
+                                location
+                            },
+                        ],
+                    },
+                ],
+            },
+        } = res
+        this.address = location.address
+        this.address.locationId = location.locationId
+        this.address.displayPosition = location.displayPosition
+    } catch(error) {
+        /*
+        How do we handle errors?
+            1. Retry here request
+            2. Fail with 500
+            3. Make adress optional, dont allow publishing
+        */
+        return next(error)
+    }
+})
 
 shopSchema.plugin(filter, { rules })
 shopSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })

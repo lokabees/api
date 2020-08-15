@@ -1,18 +1,18 @@
-import { merge } from 'lodash'
-import { Shop as Data } from '.'
+import { Shop } from '.'
 import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 import { errorHandler } from 's/response'
 
 // Get all
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
-        const datas = await Data.paginate(querymen, {
+        querymen.query.published = true
+        const shops = await Shop.paginate(querymen, {
             populate: [{ path: 'author' }],
             method,
             user
         })
 
-        res.status(OK).json(datas)
+        res.status(OK).json(shops)
     } catch (error) {
         errorHandler(res, error)
     }
@@ -21,14 +21,14 @@ export const index = async ({ querymen, user, method }, res, next) => {
 // Get One
 export const show = async ({ params: { id }, method, user }, res, next) => {
     try {
-        const data = await Data.findById(id).populate('author')
+        const shop = await Shop.findById(id).populate('author')
 
-        if (!data) {
+        if (!shop) {
             res.status(NOT_FOUND).end()
             return
         }
 
-        res.status(OK).json(data.filter({ role: user?.role, method }))
+        res.status(OK).json(shop.filter({ role: user?.role, method }))
     } catch (error) {
         errorHandler(res, error)
     }
@@ -37,7 +37,7 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
 // Post
 export const create = async ({ bodymen: { body }, method, user }, res, next) => {
     try {
-        const data = await Data.create(body)
+        const data = await Shop.create(body)
 
         res.status(CREATED).json(data.filter({ role: user?.role, method }))
     } catch (error) {
@@ -48,21 +48,21 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
 // Put
 export const update = async ({ bodymen: { body }, user, method, params: { id } }, res, next) => {
     try {
-        const data = await Data.findById(id).populate('author')
+        const shop = await Shop.findById(id).populate('author')
 
-        if (!data) {
+        if (!shop) {
             res.status(NOT_FOUND).end()
             return
         }
 
-        if (!Data.isOwner(data, user)) {
+        if (!Shop.isOwner(shop, user)) {
             res.status(FORBIDDEN).end()
             return
         }
 
-        await data.set(body).save()
+        await shop.set(body).save()
 
-        res.status(OK).json(data.filter({ role: user?.role, method }))
+        res.status(OK).json(shop.filter({ role: user?.role, method }))
     } catch (error) {
         errorHandler(res, error)
     }
@@ -71,19 +71,19 @@ export const update = async ({ bodymen: { body }, user, method, params: { id } }
 // Delete
 export const destroy = async ({ params: { id }, user }, res, next) => {
     try {
-        const data = await Data.findById(id)
+        const shop = await Shop.findById(id)
 
-        if (!data) {
+        if (!shop) {
             res.status(NOT_FOUND).end()
             return
         }
 
-        if (!Data.isOwner(data, user)) {
+        if (!Shop.isOwner(shop, user)) {
             res.status(FORBIDDEN).end()
             return
         }
 
-        await data.deleteOne({ _id: id})
+        await shop.deleteOne({ _id: id})
 
         res.status(NO_CONTENT).end()
     } catch (error) {

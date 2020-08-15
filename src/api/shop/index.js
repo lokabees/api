@@ -6,7 +6,8 @@ import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 export Shop, { schema } from './model'
 
-const { content } = schema.tree
+const { name, contact, description, address, author, published } = schema.tree
+const { locationId } = address
 /**
  * @swagger
  * tags:
@@ -18,7 +19,7 @@ const router = new Router()
 /**
  * @swagger
  * path:
- *  api/shops/:
+ *  /api/shops/:
  *    post:
  *      summary: Create a new Shop
  *      tags: [Shops]
@@ -49,10 +50,10 @@ const router = new Router()
  */
 router.post(
     '/',
+    addAuthor({ required: true, addBody: true }),
     body({
-        content
+        name, contact, description, address: { locationId } , author, published
     }),
-    addAuthor({ required: false, addBody: true }),
     create
 )
 
@@ -60,7 +61,7 @@ router.post(
 /**
  * @swagger
  * path:
- *  api/shops/:
+ *  content/api/shops/:
  *    get:
  *      summary: Get shops
  *      tags: [Shops]
@@ -79,7 +80,7 @@ router.get('/', query(), index)
 /**
  * @swagger
  * path:
- *  api/shops/{shopId}:
+ *  /api/shops/{shopId}:
  *    get:
  *      summary: Get Shop
  *      tags: [Shops]
@@ -107,7 +108,7 @@ router.get('/:id', show)
 /**
  * @swagger
  * path:
- *  api/shops/{shopId}:
+ *  /api/shops/{shopId}:
  *    put:
  *      summary: Update shop
  *      tags: [Shops]
@@ -141,12 +142,12 @@ router.get('/:id', show)
  *        "500":
  *          description: Oh boi
  */
-router.put('/:id', body({ content }), update)
+router.put('/:id', body({ name }), update)
 
 /**
  * @swagger
  * path:
- *  api/shops/{shopId}:
+ *  /api/shops/{shopId}:
  *    delete:
  *      summary: Delete shop
  *      tags: [Shops]
