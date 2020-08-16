@@ -1,12 +1,10 @@
 import 'dotenv/config'
 import request from 'supertest'
 import server from '~/server'
-import { Router } from 'express'
 import { sign } from 's/auth'
-import { addAuthor } from 's/request'
 import User from 'a/user/model'
 import { Shop } from 'a/shop'
-import { apiRoot, masterKey } from '~/config'
+import { apiRoot } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
 
 let adminUser,
@@ -14,18 +12,23 @@ let adminUser,
     shop,
     defaultUser,
     defaultToken,
-    guestData,
-    userData,
-    adminData,
+    adminShop,
     apiEndpoint = 'shops'
 
 beforeEach(async () => {
 
     defaultUser = await User.create({
         name: 'Marty',
-        email: 'marty0@getit.lolsocial',
+        email: 'marty0@lokabees.de',
         password: 'SuperPasswort123?!',
         role: 'user'
+    })
+
+    adminUser = await User.create({
+        name: 'Marty',
+        email: 'marty1@lokabees.de',
+        password: 'SuperPasswort123?!',
+        role: 'admin'
     })
 
     shop = await Shop.create({
@@ -45,32 +48,46 @@ beforeEach(async () => {
         published: false
     })
     
+    adminShop = await Shop.create({
+        name: 'Admin Kekseladen',
+        contact: {
+            website: 'https://www.kekse.de',
+            facebook: 'https://facebook.com/claudias_kekseladen',
+            instagram: 'https://instagram.com/claudias_kekseladen',
+            phone: '+49 1234 12345',
+            email: 'claudia@kekse.de',   
+        },
+        description: 'Kekse sind toll.',
+        address: {
+            locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+        },
+        author: adminUser,
+        published: true
+    })
+
     defaultToken = (await sign(defaultUser)).token
+    adminToken = (await sign(adminUser)).token
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
    
     // INDEX
-    test(`GET ${apiRoot}/${apiEndpoint} ADMIN OK`, async () => {
+    test(`GET ${apiRoot}/${apiEndpoint} GUEST OK`, async () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}`)
 
+        expect(body.rows).toHaveLength(1)
         expect(status).toBe(OK)
      })
- /*
-    test(`GET ${apiRoot}/${apiEndpoint} ADMIN OK`, async () => {
+ 
+    test(`GET ${apiRoot}/${apiEndpoint} USER OK`, async () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
+        expect(body.rows).toHaveLength(1)
         expect(status).toBe(OK)
-
-        // check if view worked, pagination gets tested separately
-        const { rows } = body
-        const [ first ] = rows
-        const keys = Object.keys(first)
-        expect(keys).toEqual(expect.arrayContaining(['content']))
     })
 
     test(`GET ${apiRoot}/${apiEndpoint} ADMIN OK`, async () => {
@@ -78,83 +95,104 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             .get(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${adminToken}`)
 
+        expect(body.rows).toHaveLength(2)
         expect(status).toBe(OK)
-
-        // check if view worked, pagination gets tested separately
-        const { rows } = body
-        const [ first ] = rows
-        const keys = Object.keys(first)
-        expect(keys).toEqual(expect.arrayContaining(['content']))
     })
 
     // SHOW
     test(`GET ${apiRoot}/${apiEndpoint}/:id GUEST OK`, async () => {
         const { status, body } = await request(server)
-            .get(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .get(`${apiRoot}/${apiEndpoint}/${shop._id}`)
 
-        expect(status).toBe(OK)
-
-        const authorKeys = Object.keys(body.author)
-        expect(authorKeys).toEqual(expect.arrayContaining(['name', 'email']))
-
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content', 'author']))
+        expect(status).toBe(NOT_FOUND)
     })
 
     test(`GET ${apiRoot}/${apiEndpoint}/:id USER OK`, async () => {
         const { status, body } = await request(server)
-            .get(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .get(`${apiRoot}/${apiEndpoint}/${shop._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
         expect(status).toBe(OK)
-
-        const authorKeys = Object.keys(body.author)
-        expect(authorKeys).toEqual(expect.arrayContaining(['name', 'email']))
-
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content', 'author']))
     })
 
     test(`GET ${apiRoot}/${apiEndpoint}/:id ADMIN OK`, async () => {
         const { status, body } = await request(server)
-            .get(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .get(`${apiRoot}/${apiEndpoint}/${shop._id}`)
             .set('Authorization', `Bearer ${adminToken}`)
 
         expect(status).toBe(OK)
 
-        const authorKeys = Object.keys(body.author)
-        expect(authorKeys).toEqual(expect.arrayContaining(['name', 'email']))
-
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content', 'author']))
     })
 
     // CREATE
-    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ ADMIN CREATED`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
-            .send({ content: 'muh first post'})
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                name: 'Claudias Kekseladen',
+                contact: {
+                    website: 'https://www.kekse.de',
+                    facebook: 'https://facebook.com/claudias_kekseladen',
+                    instagram: 'https://instagram.com/claudias_kekseladen',
+                    phone: '+49 1234 12345',
+                    email: 'claudia@kekse.de',   
+                },
+                description: 'Kekse sind toll.',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                author: defaultUser,
+                published: true
+            })
+
+        // make sure here api request worked
+        expect(body.address.label).not.toBeUndefined()
+        expect(body.address.city).not.toBeUndefined()
+        expect(body.address.country).not.toBeUndefined()
+        expect(body.address.county).not.toBeUndefined()
+        expect(body.address.district).not.toBeUndefined()
+        expect(body.address.houseNumber).not.toBeUndefined()
+        expect(body.address.locationId).not.toBeUndefined()
+        expect(body.address.state).not.toBeUndefined()
+        expect(body.address.street).not.toBeUndefined()
+        expect(body.address.postalCode).not.toBeUndefined()
+        expect(body.address.displayPosition).not.toBeUndefined()
+
+        // slug got generated
+        expect(body.slug).not.toBeUndefined()
 
         expect(status).toBe(CREATED)
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content']))
+
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST FORBIDDEN`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
-            .send({ content: 'muh first post'})
-            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Claudias Kekseladen',
+                contact: {
+                    website: 'https://www.kekse.de',
+                    facebook: 'https://facebook.com/claudias_kekseladen',
+                    instagram: 'https://instagram.com/claudias_kekseladen',
+                    phone: '+49 1234 12345',
+                    email: 'claudia@kekse.de',   
+                },
+                description: 'Kekse sind toll.',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                author: defaultUser,
+                published: true
+            })
 
-        expect(status).toBe(CREATED)
+        expect(status).toBe(FORBIDDEN)
 
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content', 'author']))
     })
-    */
+    
     test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED`, async () => {
         const { status, body } = await request(server)
-            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({
                 name: 'Claudias Kekseladen',
@@ -191,72 +229,61 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         expect(status).toBe(CREATED)
     })
-    /*
+    
     // UPDATE
     test(`PUT ${apiRoot}/${apiEndpoint}/:id GUEST FORBIDDEN`, async () => {
         const { status } = await request(server)
-            .put(`${apiRoot}/${apiEndpoint}/${guestData._id}`)
-            .send({ content: 'updated content?' })
+            .put(`${apiRoot}/${apiEndpoint}/${shop._id}`)
+            .send({ name: 'updated name?' })
         expect(status).toBe(FORBIDDEN)
     })
 
     test(`PUT ${apiRoot}/${apiEndpoint}/:id USER OK`, async () => {
         const { status, body } = await request(server)
-            .put(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .put(`${apiRoot}/${apiEndpoint}/${shop._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
-            .send({ content: 'EDIT' })
+            .send({ name: 'new_name' })
 
         expect(status).toBe(OK)
-
-        const authorKeys = Object.keys(body.author)
-        expect(authorKeys).toEqual(expect.arrayContaining(['name', 'email']))
-
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content', 'author']))
     })
 
     test(`PUT ${apiRoot}/${apiEndpoint}/:id USER FORBIDDEN (OWNERSHIP)`, async () => {
         const { status, body } = await request(server)
-            .put(`${apiRoot}/${apiEndpoint}/${adminData._id}`)
+            .put(`${apiRoot}/${apiEndpoint}/${adminShop._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
-            .send({ content: 'git gud' })
+            .send({ name: 'git gud' })
 
         expect(status).toBe(FORBIDDEN)
     })
 
     test(`PUT ${apiRoot}/${apiEndpoint}/:id ADMIN OK`, async () => {
         const { status, body } = await request(server)
-            .put(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .put(`${apiRoot}/${apiEndpoint}/${shop._id}`)
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ content: 'censored' })
+            .send({ name: 'mhmhmh' })
 
         expect(status).toBe(OK)
-
-        const authorKeys = Object.keys(body.author)
-        expect(authorKeys).toEqual(expect.arrayContaining(['name', 'email']))
-
-        const keys = Object.keys(body)
-        expect(keys).toEqual(expect.arrayContaining(['content', 'author']))    })
+    })
 
     test(`PUT ${apiRoot}/${apiEndpoint}/:id ADMIN NOT_FOUND`, async () => {
         const { status, body } = await request(server)
             .put(`${apiRoot}/${apiEndpoint}/5ee5309727c6997fa0339135`)
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ content: 'reee' })
+            .send({ name: 'reee' })
 
         expect(status).toBe(NOT_FOUND)
     })
-
+    
     // DELETE
     test(`DELETE ${apiRoot}/${apiEndpoint}/:id GUEST FORBIDDEN`, async () => {
         const { status } = await request(server)
-            .delete(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .delete(`${apiRoot}/${apiEndpoint}/${shop._id}`)
         expect(status).toBe(FORBIDDEN)
     })
 
     test(`DELETE ${apiRoot}/${apiEndpoint}/:id USER NO_CONTENT`, async () => {
         const { status, body } = await request(server)
-            .delete(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .delete(`${apiRoot}/${apiEndpoint}/${shop._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
         expect(status).toBe(NO_CONTENT)
@@ -264,7 +291,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     test(`DELETE ${apiRoot}/${apiEndpoint}/:id USER FORBIDDEN (OWNERSHIP)`, async () => {
         const { status, body } = await request(server)
-            .delete(`${apiRoot}/${apiEndpoint}/${adminData._id}`)
+            .delete(`${apiRoot}/${apiEndpoint}/${adminShop._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
         expect(status).toBe(FORBIDDEN)
@@ -272,7 +299,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     test(`DELETE ${apiRoot}/${apiEndpoint}/:id ADMIN NO_CONTENT`, async () => {
         const { status, body } = await request(server)
-            .delete(`${apiRoot}/${apiEndpoint}/${userData._id}`)
+            .delete(`${apiRoot}/${apiEndpoint}/${shop._id}`)
             .set('Authorization', `Bearer ${adminToken}`)
 
         expect(status).toBe(NO_CONTENT)
@@ -290,16 +317,180 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
 describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST BAD CONTENT`, async () => {
-        const { status } = await request(server)
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing name`, async () => {
+        const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
-            .send({ content: '' })
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                contact: {
+                    website: 'https://www.kekse.de',
+                    facebook: 'https://facebook.com/claudias_kekseladen',
+                    instagram: 'https://instagram.com/claudias_kekseladen',
+                    phone: '+49 1234 12345',
+                    email: 'claudia@kekse.de',   
+                },
+                description: 'Kekse sind toll.',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                author: defaultUser,
+                published: true
+            })
 
         expect(status).toBe(BAD_REQUEST)
     })
 
-})
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing description`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                contact: {
+                    website: 'https://www.kekse.de',
+                    facebook: 'https://facebook.com/claudias_kekseladen',
+                    instagram: 'https://instagram.com/claudias_kekseladen',
+                    phone: '+49 1234 12345',
+                    email: 'claudia@kekse.de',   
+                },
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                author: defaultUser,
+                published: true
+            })
 
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing locationId`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                contact: {
+                    website: 'https://www.kekse.de',
+                    facebook: 'https://facebook.com/claudias_kekseladen',
+                    instagram: 'https://instagram.com/claudias_kekseladen',
+                    phone: '+49 1234 12345',
+                    email: 'claudia@kekse.de',   
+                },
+                author: defaultUser,
+                published: true
+            })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED minimum`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+            })
+
+        expect(status).toBe(CREATED)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid instagram`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                contact: {
+                    instagram: 'google.de'
+                },
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+            })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+/* 
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid facebook`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                contact: {
+                    facebook: 'google.de'
+                },
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+            })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid website`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                contact: {
+                    website: 'huh'
+                },
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+            })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid phone`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                contact: {
+                    phone: '3.14'
+                },
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+            })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid email`, async () => {
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                contact: {
+                    email: 'hmmhh'
+                },
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+            })
+
+        expect(status).toBe(BAD_REQUEST)
+    })
+ */
+})
+/* 
 
 describe(`TEST ${apiRoot}/${apiEndpoint} PAGINATION`,  () => {
 
@@ -394,5 +585,6 @@ describe(`TEST ${apiRoot}/${apiEndpoint} PAGINATION`,  () => {
         expect(nextPage).toBe(null)
 
     })
- */
+ 
 })
+ */

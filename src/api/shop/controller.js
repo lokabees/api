@@ -5,7 +5,11 @@ import { errorHandler } from 's/response'
 // Get all
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
-        querymen.query.published = true
+
+        if (user?.role !== 'admin') { // If user is not admin we only want to show the published shops
+            querymen.query.published = true
+        }
+
         const shops = await Shop.paginate(querymen, {
             populate: [{ path: 'author' }],
             method,
@@ -23,7 +27,7 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
     try {
         const shop = await Shop.findById(id).populate('author')
 
-        if (!shop) {
+        if (!shop || !shop.published && !Shop.isOwner(shop, user)) {
             res.status(NOT_FOUND).end()
             return
         }
@@ -35,7 +39,7 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
 }
 
 // Post
-export const create = async ({ bodymen: { body }, method, user }, res, next) => {
+export const create = async ({ body, method, user }, res, next) => {
     try {
         const data = await Shop.create(body)
 

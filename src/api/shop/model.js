@@ -20,7 +20,7 @@ const shopSchema = new Schema(
             unique: true
         },
         contact: {
-            website: {
+    /*         website: {
                 type: String,
                 validate: {
                     validator: value => websiteValidator.test(value),
@@ -47,13 +47,10 @@ const shopSchema = new Schema(
                     validator: value => parsePhoneNumberFromString(value).isValid(),
                     message: props => 'Phone is invalid'
                 }  
-            },
+            }, */
             email: {
                 type: String,
-                validate: {
-                    validator: value => emailValidator.test(value),
-                    message: props => 'Email is invalid'
-                }
+                validate: [ ]
             }
         },
         description: {

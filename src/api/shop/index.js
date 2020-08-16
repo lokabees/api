@@ -4,10 +4,12 @@ import { middleware as body } from 'bodymen'
 import { addAuthor } from 's/request'
 import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
+import { checkSchema } from 'express-validator'
 export Shop, { schema } from './model'
 
 const { name, contact, description, address, author, published } = schema.tree
 const { locationId } = address
+const { instagram, facebook, phone, website, email } = contact
 /**
  * @swagger
  * tags:
