@@ -14,45 +14,52 @@ const shopSchema = new Schema(
         name: {
             type: String,
             required: true,
+            validate: {
+                validator: value => value.length > 0,
+                message: _ => 'name is too short'
+            }
         },
         slug: {
             type: String, 
             unique: true
         },
-        contact: {
-    /*         website: {
+        contact: new Schema({
+            website: {
                 type: String,
                 validate: {
                     validator: value => websiteValidator.test(value),
-                    message: props => 'Website URI is invalid'
+                    message: _ => 'Website URI is invalid'
                 }
             },
             facebook: {
                 type: String,
                 validate: {
                     validator: value => facebookValidator.test(value),
-                    message: props => 'Facebook URI is invalid'
+                    message: _ => 'Facebook URI is invalid'
                 }
             },
             instagram: {
                 type: String,
                 validate: {
                     validator: value => instagramValidator.test(value),
-                    message: props => 'Instagram URI is invalid'
+                    message: _ => 'Instagram URI is invalid'
                 }
             },
             phone: {
                 type: String,
                 validate: {
                     validator: value => parsePhoneNumberFromString(value).isValid(),
-                    message: props => 'Phone is invalid'
+                    message: _ => 'Phone is invalid'
                 }  
-            }, */
+            }, 
             email: {
                 type: String,
-                validate: [ ]
+                validate: {
+                    validator: value => emailValidator.test(value),
+                    message: _ => 'Email is invalid'
+                }  
             }
-        },
+        }),
         description: {
             type: String,
             required: true // validation?
@@ -162,6 +169,10 @@ shopSchema.pre('validate', async function(next) {
         */
         return next(error)
     }
+})
+
+shopSchema.virtual('address.display').get(function () {
+    return `${this.address.street} ${this.address.houseNumber}, ${this.address.postalCode} ${this.address.city}`
 })
 
 shopSchema.plugin(filter, { rules })

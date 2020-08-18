@@ -1,12 +1,13 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
-import { middleware as body } from 'bodymen'
+//import { middleware as body } from 'bodymen'
 import { addAuthor } from 's/request'
 import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
-import { checkSchema } from 'express-validator'
+import { body, validationResult } from 'express-validator'
 export Shop, { schema } from './model'
-
+import { facebookValidator, instagramValidator, emailValidator, websiteValidator } from '~/utils/validator'
+import { validator } from 's/validator'
 const { name, contact, description, address, author, published } = schema.tree
 const { locationId } = address
 const { instagram, facebook, phone, website, email } = contact
@@ -53,9 +54,35 @@ const router = new Router()
 router.post(
     '/',
     addAuthor({ required: true, addBody: true }),
-    body({
-        name, contact, description, address: { locationId } , author, published
-    }),
+    [
+        body('name').exists().isString().notEmpty(),
+        body('author').exists(),
+        body('published').optional().isBoolean(),
+        body('description').exists().isString().trim().escape(),
+        body('contact.email').optional().normalizeEmail().isEmail(),
+        body('contact.instagram')
+            .optional()
+            .matches(instagramValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.website')
+            .optional()
+            .matches(websiteValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.facebook')
+            .optional()
+            .matches(facebookValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.phone').optional()
+        
+    ],
+    (req, res, next) => {
+        const err = validationResult(req)
+        if (!err.isEmpty()) {
+            res.status(400).json(err.mapped()).end()
+            return
+        }
+        next()
+    },
     create
 )
 

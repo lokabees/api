@@ -1,7 +1,6 @@
 import m2s from 'mongoose-to-swagger'
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
-import { generate } from 'rand-token'
 import { gravatar, paginate, filter, ownership } from 's/mongoose'
 import { hashPassword } from 's/auth'
 import { env } from '~/config'
@@ -53,8 +52,24 @@ const userSchema = new Schema(
         },
         verified: {
             type: Boolean,
-            default: false
-        }
+            default: env === 'development'
+        },
+        activeShop: {
+            type: Schema.Types.ObjectId,
+            ref: 'Shop',
+        },
+        shops: {
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Shop',
+                },
+            ],
+            validate: [
+                shops => shops.length <= 100,
+                'only 100 shops per user',
+            ],
+        },
     },
     {
         timestamps: true

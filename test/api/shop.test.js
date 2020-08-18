@@ -71,7 +71,7 @@ beforeEach(async () => {
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
-   
+   /* 
     // INDEX
     test(`GET ${apiRoot}/${apiEndpoint} GUEST OK`, async () => {
         const { status, body } = await request(server)
@@ -123,10 +123,10 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(OK)
 
     })
-
+ */
     // CREATE
     test(`POST ${apiRoot}/${apiEndpoint}/ ADMIN CREATED`, async () => {
-        const { status, body } = await request(server)
+        const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
@@ -145,7 +145,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 author: defaultUser,
                 published: true
             })
-
+        console.log(error)
         // make sure here api request worked
         expect(body.address.label).not.toBeUndefined()
         expect(body.address.city).not.toBeUndefined()
@@ -229,7 +229,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         expect(status).toBe(CREATED)
     })
-    
+    /* 
     // UPDATE
     test(`PUT ${apiRoot}/${apiEndpoint}/:id GUEST FORBIDDEN`, async () => {
         const { status } = await request(server)
@@ -312,7 +312,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         expect(status).toBe(NOT_FOUND)
     })
-
+ */
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
@@ -362,7 +362,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
 
         expect(status).toBe(BAD_REQUEST)
     })
-
+/* 
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing locationId`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
@@ -384,8 +384,8 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
         expect(status).toBe(BAD_REQUEST)
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED minimum`, async () => {
-        const { status, body } = await request(server)
+ */    test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED minimum`, async () => {
+        const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({
@@ -395,12 +395,12 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                     locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
                 },
             })
-
+        console.log(error)
         expect(status).toBe(CREATED)
     })
 
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid instagram`, async () => {
-        const { status, body } = await request(server)
+        const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({
@@ -413,7 +413,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                     locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
                 },
             })
-
+        console.log(error)
         expect(status).toBe(BAD_REQUEST)
     })
 /* 

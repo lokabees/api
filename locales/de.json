@@ -9,5 +9,6 @@
     "missing-permission": "Du hast keine Erlaubnis um auf diese Ressource zuzugreifen",
     "missing-or-wrong-parameters": "Deine Anfrage beinhaltet ungueltige Parameter",
 	"missing-files": "Die Datei fehlt",
-	"masterkey-error": "Masterkey ist falsch oder fehlt"
+    "masterkey-error": "Masterkey ist falsch oder fehlt",
+    "contact.instagram.validation": "Instagram Adresse ist inkorrekt"
 }
