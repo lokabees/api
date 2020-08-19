@@ -1,4 +1,4 @@
-import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
+import { OK } from 'http-status-codes'
 import { errorHandler } from 's/response'
 import mbx from '@mapbox/mapbox-sdk/services/geocoding'
 import { mapbox } from '~/config'

@@ -12,32 +12,21 @@ const router = new Router()
 /**
  * @swagger
  * path:
- *  /api/maps/:
- *    post:
- *      summary: Create a new Map
+ *  /api/maps/suggest:
+ *    get:
+ *      summary: Get mapbox place suggestion for germany. https://docs.mapbox.com/help/how-mapbox-works/geocoding/
  *      tags: [Maps]
- *      security:
- *        - jwtSessionToken: []
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                content:
- *                  type: string
+ *      parameters:
+ *         - in: query
+ *           name: q
+ *           schema:
+ *             type: string
+ *           description: 'The search string. Preffered Format: Street Nr, Postcode City.'
  *      responses:
- *        "201":
- *          description: A map schema
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Map'
+ *        "200":
+ *          description: Suggestions
  *        "400":
  *          description: Invalid Body
- *        "403":
- *          description: Missing permissions
  *        "500":
  *          description: Oh boi
  */
