@@ -7,6 +7,7 @@ import slugify from 'slugify'
 import { facebookValidator, instagramValidator, emailValidator, websiteValidator } from '~/utils/validator'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import { hereConfig } from '~/config'
+import { User } from 'a/user'
 import request from 'request-promise'
 // schema for shop
 const shopSchema = new Schema(
@@ -113,6 +114,16 @@ const shopSchema = new Schema(
     }
 )
 
+shopSchema.post('save', async function(shop) {
+
+    const userId = shop.author
+    const user = await User.findById(userId)
+    // if its a new shop, set it as active and add to shop list
+    if (!user.shops.includes(shop._id)) {
+        await User.updateOne({ _id: userId }, { activeShop: shop._id, $push: { shops: shop._id }})
+    }
+
+})
 // Find a unique slug if name changed
 shopSchema.pre('validate', async function(next) {
     

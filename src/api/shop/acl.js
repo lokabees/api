@@ -28,7 +28,7 @@ const permissions = [
                 resource: 'shops/*',
                 methods: ['GET', 'POST', 'PUT', 'DELETE'],
                 action: 'allow',
-                view: ['name', 'slug', 'contact', 'description', 'address', 'author', 'published']
+                view: ['_id', 'name', 'slug', 'contact', 'description', 'address', 'author', 'published']
             }
         ]
     }

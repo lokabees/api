@@ -169,6 +169,11 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         // slug got generated
         expect(body.slug).not.toBeUndefined()
 
+        // shop got added to user
+        const user = await User.findById(adminUser._id)
+        expect(user.activeShop.toString()).toBe(body._id)
+        expect(user.shops.findIndex(e => e.toString() === body._id)).not.toBe(-1)
+
         expect(status).toBe(CREATED)
 
     })
