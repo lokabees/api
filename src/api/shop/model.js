@@ -129,15 +129,16 @@ shopSchema.pre('validate', async function(next) {
     }
     this.slug = slug
 
-    return next()
+    next()
 })
 
 // request adress data if locationId changed
 shopSchema.pre('validate', async function(next) {
     if (!this.isModified('address.locationId')) {
-        return next()
+        next()
+        return
     }
-
+    
     // HERE API request
     try {
         const res = await request({

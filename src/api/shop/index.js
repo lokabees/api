@@ -1,16 +1,14 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
-//import { middleware as body } from 'bodymen'
 import { addAuthor } from 's/request'
 import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
-import { body, validationResult } from 'express-validator'
+import { body } from 'express-validator'
 export Shop, { schema } from './model'
-import { facebookValidator, instagramValidator, emailValidator, websiteValidator } from '~/utils/validator'
-import { validator } from 's/validator'
-const { name, contact, description, address, author, published } = schema.tree
-const { locationId } = address
-const { instagram, facebook, phone, website, email } = contact
+import { facebookValidator, instagramValidator, websiteValidator } from '~/utils/validator'
+import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+
 /**
  * @swagger
  * tags:
@@ -72,17 +70,16 @@ router.post(
             .optional()
             .matches(facebookValidator)
             .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
-        body('contact.phone').optional()
-        
+        body('contact.phone').optional().custom((value, { req }) => {
+            if (!parsePhoneNumberFromString(value).isValid()) {
+                throw new Error(req.__('contact.phone.validation')) 
+            }
+            return true
+        }),
+        body('address.locationId').exists().isString().notEmpty()
     ],
-    (req, res, next) => {
-        const err = validationResult(req)
-        if (!err.isEmpty()) {
-            res.status(400).json(err.mapped()).end()
-            return
-        }
-        next()
-    },
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     create
 )
 
@@ -171,7 +168,36 @@ router.get('/:id', show)
  *        "500":
  *          description: Oh boi
  */
-router.put('/:id', body({ name }), update)
+router.put('/:id',
+    [
+        body('name').optional().isString().notEmpty(),
+        body('published').optional().isBoolean(),
+        body('description').optional().isString().trim().escape(),
+        body('contact.email').optional().normalizeEmail().isEmail(),
+        body('contact.instagram')
+            .optional()
+            .matches(instagramValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.website')
+            .optional()
+            .matches(websiteValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.facebook')
+            .optional()
+            .matches(facebookValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.phone').optional().custom((value, { req }) => {
+            if (!parsePhoneNumberFromString(value).isValid()) {
+                throw new Error(req.__('contact.phone.validation')) 
+            }
+            return true
+        }),
+        body('address.locationId').optional().isString().notEmpty()
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
+    update
+)
 
 /**
  * @swagger

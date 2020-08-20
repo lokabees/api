@@ -41,16 +41,16 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
 // Post
 export const create = async ({ body, method, user }, res, next) => {
     try {
-        const data = await Shop.create(body)
+        const shop = await Shop.create(body)
 
-        res.status(CREATED).json(data.filter({ role: user?.role, method }))
+        res.status(CREATED).json(shop.filter({ role: user?.role, method }))
     } catch (error) {
         errorHandler(res, error)
     }
 }
 
 // Put
-export const update = async ({ bodymen: { body }, user, method, params: { id } }, res, next) => {
+export const update = async ({ body, user, method, params: { id } }, res, next) => {
     try {
         const shop = await Shop.findById(id).populate('author')
 
