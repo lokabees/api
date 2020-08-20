@@ -99,7 +99,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     })
 
     // SHOW
-    test(`GET ${apiRoot}/${apiEndpoint}/:id GUEST OK`, async () => {
+    test(`GET ${apiRoot}/${apiEndpoint}/:id GUEST NOT_FOUND`, async () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}/${shop._id}`)
 
@@ -109,6 +109,14 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     test(`GET ${apiRoot}/${apiEndpoint}/:id USER OK`, async () => {
         const { status, body } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}/${shop._id}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+
+        expect(status).toBe(OK)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/:id USER SLUG OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${shop.slug}`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
         expect(status).toBe(OK)

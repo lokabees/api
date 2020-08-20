@@ -8,3 +8,5 @@ export const instagramValidator = /^(?:(?:http|https):\/\/)?(?:www.)?instagram\.
 export const facebookValidator = /^(?:(?:http|https):\/\/)?(?:www.)?facebook\.com\/[a-z\d-_]{1,255}\s*$/i
 
 export const websiteValidator = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
+
+export const isObjectId = (value) => /^[0-9a-fA-F]{24}$/.test(value)
