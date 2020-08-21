@@ -14,5 +14,7 @@
 	"contact.website.validation": "Website URI is invalid",
 	"contact.facebook.validation": "Facebook URI is invalid",
 	"contact.email.validation": "Email is invalid",
-	"contact.phone.validation": "Phone number is invalid"
+	"contact.phone.validation": "Phone number is invalid",
+	"images.title.validation": "images.title.validation",
+	"images.profile.validation": "images.profile.validation"
 }

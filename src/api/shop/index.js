@@ -5,7 +5,7 @@ import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 import { body } from 'express-validator'
 export Shop, { schema } from './model'
-import { facebookValidator, instagramValidator, websiteValidator } from '~/utils/validator'
+import { facebookValidator, instagramValidator, websiteValidator, cloudinaryValidator } from '~/utils/validator'
 import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
@@ -61,20 +61,44 @@ router.post(
         body('contact.instagram')
             .optional()
             .matches(instagramValidator)
-            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
         body('contact.website')
             .optional()
             .matches(websiteValidator)
-            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
         body('contact.facebook')
             .optional()
             .matches(facebookValidator)
-            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
         body('contact.phone').optional().custom((value, { req }) => {
             if (!parsePhoneNumberFromString(value).isValid()) {
-                throw new Error(req.__('contact.phone.validation')) 
+                throw new Error(req.__(`${path}.validation`)) 
             }
             return true
+        }),
+        body('images.title')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        }),
+        body('images.profile')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
         }),
         body('address.locationId').exists().isString().notEmpty()
     ],
@@ -102,7 +126,6 @@ router.post(
  *          description: Oh boi
  */
 router.get('/', query(), index)
-
 /**
  * @swagger
  * path:
@@ -191,6 +214,32 @@ router.put('/:id',
                 throw new Error(req.__('contact.phone.validation')) 
             }
             return true
+        }),
+        body('images.title')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                console.log(value)
+                if (req.body.title.url === undefined || req.body.title.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = req.body.title.url.match(cloudinaryValidator)
+                console.log(match)
+                if (match === null || req.body.title.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        }),
+        body('images.profile')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
         }),
         body('address.locationId').optional().isString().notEmpty()
     ],

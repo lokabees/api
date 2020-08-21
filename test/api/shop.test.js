@@ -219,9 +219,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 address: {
                     locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
                 },
+                images: {
+                    title: {
+                        url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
+                        id: 'shop/abcd'
+                    },
+                    profile: {
+                        url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
+                        id: 'shop/abcd'
+                    }
+                },
                 author: defaultUser,
                 published: true
             })
+
+        expect(status).toBe(CREATED)
 
         // make sure here api request worked
         expect(body.address.label).not.toBeUndefined()
@@ -239,7 +251,6 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         // slug got generated
         expect(body.slug).not.toBeUndefined()
 
-        expect(status).toBe(CREATED)
     })  
     
     // UPDATE
@@ -409,6 +420,90 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
             })
         
         expect(status).toBe(CREATED)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid title image`, async () => {
+        const { status } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                images: {
+                    title: {
+                        url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
+                        id: 'shop/123'
+                    }
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid title image`, async () => {
+        const { status } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                images: {
+                    title: {
+                        url: 'what',
+                        id: 'shop/123'
+                    }
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid profile image`, async () => {
+        const { status } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                images: {
+                    profile: {
+                        url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
+                        id: 'shop/123'
+                    }
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid profile image`, async () => {
+        const { status } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                images: {
+                    profile: {
+                        url: 'what',
+                        id: 'shop/123'
+                    }
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
     })
 
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid instagram`, async () => {

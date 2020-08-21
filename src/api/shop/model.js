@@ -91,6 +91,16 @@ const shopSchema = new Schema(
                 }
             }
         },
+        images: {
+            title: {
+                url: { type: String, default: 'cdn-link' },
+                id: { type: String, default: 'placeholder' }
+            },
+            profile: {
+                url: { type: String, default: 'cdn-link' },
+                id: { type: String, default: 'placeholder' }
+            }
+        },
         author: {
             type: 'ObjectId',
             ref: 'User',
@@ -100,6 +110,7 @@ const shopSchema = new Schema(
         published: {
             type: Boolean,
             default: false,
+            required: true,
             description: 'unpublished shops will not be accessible for the public (only owner+author+admin)'
         }
     },
