@@ -48,6 +48,9 @@ const config = {
             },
             defaultEmail: 'no-reply@your-website.com'
         },
+        mapbox: {
+            accessToken: requireProcessEnv('MAPBOX_KEY')
+        },
         cloudinaryConfig: {
             cloud_name: requireProcessEnv('CLOUDINARY_CLOUD_NAME'),
             api_key: requireProcessEnv('CLOUDINARY_API_KEY'),

@@ -34,6 +34,7 @@
 		"supertest": "^4.0.2"
 	},
 	"dependencies": {
+		"@mapbox/mapbox-sdk": "^0.11.0",
 		"@sendgrid/mail": "^7.2.0",
 		"argon2": "^0.26.2",
 		"babel-eslint": "^10.1.0",

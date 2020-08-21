@@ -1,5 +1,6 @@
 import { groupBy } from 'lodash'
 /* ENDPOINT_ACL_IMPORT */
+import mapAcl from './map/acl'
 import shopAcl from './shop/acl'
 import mediaAcl from './media/acl'
 import authAcl from './auth/acl'
@@ -12,7 +13,8 @@ const defaultPermissions = []
 const permissions = {
     ...groupBy([
         /* ENDPOINT_ACL_EXPORT */
-...shopAcl,
+        ...mapAcl,
+        ...shopAcl,
         ...mediaAcl,
         ...defaultPermissions,
         ...authAcl,
