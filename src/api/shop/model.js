@@ -4,7 +4,7 @@ import { paginate, filter, ownership } from 's/mongoose'
 import rules from './acl'
 import userAcl from 'a/user/acl'
 import slugify from 'slugify'
-import { facebookValidator, instagramValidator, emailValidator, websiteValidator } from '~/utils/validator'
+import { facebookValidator, instagramValidator, emailValidator, websiteValidator, openingHoursValidatorMongoose as openingHoursValidator, minutesToHHMM } from '~/utils/validator'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import { hereConfig } from '~/config'
 import { User } from 'a/user'
@@ -112,6 +112,17 @@ const shopSchema = new Schema(
             default: false,
             required: true,
             description: 'unpublished shops will not be accessible for the public (only owner+author+admin)'
+        },
+        parsedOpeningHours: {
+            type: Object,
+            monday: [{ open: { type: Number }, close: { type: Number } }],
+            tuesday: [{ open: { type: Number }, close: { type: Number } }],
+            wednesday: [{ open: { type: Number }, close: { type: Number } }],
+            thursday: [{ open: { type: Number }, close: { type: Number } }],
+            friday: [{ open: { type: Number }, close: { type: Number } }],
+            saturday: [{ open: { type: Number }, close: { type: Number } }],
+            sunday: [{ open: { type: Number }, close: { type: Number } }],
+            validate: openingHoursValidator,
         }
     },
     {
@@ -125,16 +136,48 @@ const shopSchema = new Schema(
     }
 )
 
-shopSchema.post('save', async function(shop) {
+shopSchema.virtual('openingHours').get(function () {
 
+    const openingHours = {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: [],
+    }
+
+    if (this.parsedOpeningHours === undefined) {
+        return openingHours
+    }
+    const days = Object.keys(this.parsedOpeningHours).filter((day) => day !== 'exceptions')
+
+    days.forEach((day) => {
+        openingHours[day] = []
+        this.parsedOpeningHours[day].forEach((segment) => {
+            openingHours[day].push({
+                allDayOpen: segment.open === 0 && segment.close === 0,
+                open: minutesToHHMM(segment.open),
+                close: minutesToHHMM(segment.close),
+            })
+        })
+    })
+
+    return openingHours
+
+})
+
+shopSchema.post('save', async function(shop) {
     const userId = shop.author
     const user = await User.findById(userId)
     // if its a new shop, set it as active and add to shop list
     if (!user.shops.includes(shop._id)) {
         await User.updateOne({ _id: userId }, { activeShop: shop._id, $push: { shops: shop._id }})
     }
-
 })
+
+
 // Find a unique slug if name changed
 shopSchema.pre('validate', async function(next) {
     

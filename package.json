@@ -60,7 +60,7 @@
 		"jsdoc": "^3.6.4",
 		"jsonwebtoken": "^8.5.1",
 		"libphonenumber-js": "^1.7.56",
-		"lodash": "^4.17.15",
+		"lodash": "^4.17.20",
 		"mongoose": "^5.9.16",
 		"mongoose-keywords": "^0.4.1",
 		"mongoose-to-swagger": "^1.0.3",

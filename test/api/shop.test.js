@@ -203,7 +203,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     })
     
     test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED`, async () => {
-        const { status, body } = await request(server)
+        const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({
@@ -229,6 +229,15 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                         id: 'shop/abcd'
                     }
                 },
+                openingHours: {
+                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                },
                 author: defaultUser,
                 published: true
             })
@@ -251,7 +260,9 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         // slug got generated
         expect(body.slug).not.toBeUndefined()
 
-    })  
+        // openinghours virtual works
+        expect(body.openingHours).not.toBeUndefined()
+    })
     
     // UPDATE
     test(`PUT ${apiRoot}/${apiEndpoint}/:id GUEST FORBIDDEN`, async () => {
