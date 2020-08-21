@@ -53,28 +53,24 @@ const validateOpeningHours = (openingHours) => {
 
         // Rule 0
         if (segments.length > 2) {
-            console.log('meh')
             return false
         }
 
         // Rule 0,5
         const invalidValue = -1 !== segments.findIndex(segment => !validSegmentRange(segment))
         if (invalidValue) {
-            console.log('meh1')
             return false
         }
 
         // Rule 1
         const allDayOpen = -1 !== segments.findIndex(segment => segment.open === 0 && segment.close === 0)
         if (allDayOpen && segments.length > 1) {
-            console.log('meh2')
             return false
         }
 
         // Rule 2
         const badSegments = segments.filter(segment => segment.open >= segment.close)
         if (!allDayOpen && badSegments.length > 0) {
-            console.log('meh3')
             return false
         }
     }    

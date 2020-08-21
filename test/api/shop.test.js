@@ -5,8 +5,8 @@ import { sign } from 's/auth'
 import User from 'a/user/model'
 import { Shop } from 'a/shop'
 import { apiRoot } from '~/config'
-import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
-
+import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
+import { parseOpeningHours } from '~/utils/validator'
 let adminUser,
     adminToken,
     shop,
@@ -44,6 +44,15 @@ beforeEach(async () => {
         address: {
             locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
         },
+        parsedOpeningHours: parseOpeningHours({
+            monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            sunday: []
+        }),
         author: defaultUser,
         published: false
     })
@@ -271,6 +280,8 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         // openinghours virtual works
         expect(body.openingHours).not.toBeUndefined()
+        expect(body.isOpen).not.toBeUndefined()
+
     })
     
     // UPDATE

@@ -1,4 +1,5 @@
 import m2s from 'mongoose-to-swagger'
+import moment from 'moment-timezone'
 import mongoose, { Schema } from 'mongoose'
 import { paginate, filter, ownership } from 's/mongoose'
 import rules from './acl'
@@ -136,6 +137,41 @@ const shopSchema = new Schema(
     }
 )
 
+
+shopSchema.virtual('isOpen').get(function () {
+    if (Object.keys(this.parsedOpeningHours).length === 0) {
+        return false
+    }
+    moment.locale('de')
+    const date = new Date()
+    const day = [
+        'sunday',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+    ][date.getDay()]
+
+    const minutes = moment().tz('Europe/Berlin').hours() * 60 + moment().minutes()
+
+    if (this.parsedOpeningHours[day].length === 0) {
+        return false // all day closed
+    }
+
+    if (this.parsedOpeningHours[day][0].open === 0 && this.parsedOpeningHours[day][0].close === 0) {
+        return true // all day open
+    }
+
+    const isOpen = this.parsedOpeningHours[day].findIndex((segment) => {
+        return segment.open <= minutes && minutes <= segment.close
+    }) !== -1
+
+    return isOpen
+
+})
+
 shopSchema.virtual('openingHours').get(function () {
 
     const openingHours = {
@@ -151,7 +187,7 @@ shopSchema.virtual('openingHours').get(function () {
     if (this.parsedOpeningHours === undefined) {
         return openingHours
     }
-    const days = Object.keys(this.parsedOpeningHours).filter((day) => day !== 'exceptions')
+    const days = Object.keys(this.parsedOpeningHours)
 
     days.forEach((day) => {
         openingHours[day] = []
