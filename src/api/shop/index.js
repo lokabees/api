@@ -5,7 +5,7 @@ import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
 import { body } from 'express-validator'
 export Shop, { schema } from './model'
-import { facebookValidator, instagramValidator, websiteValidator, cloudinaryValidator, parseOpeningHours, openingHoursValidator } from '~/utils/validator'
+import { facebookValidator, instagramValidator, websiteValidator, cloudinaryValidator, parseOpeningHours, openingHoursValidatorExpress } from '~/utils/validator'
 import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
@@ -103,7 +103,7 @@ router.post(
                 return true
         }),
         body('address.locationId').exists().isString().notEmpty(),
-        body('openingHours').optional().custom((value, { req, location, path }) => {
+        body('openingHours').exists().custom((value, { req, location, path }) => {
             try {
                 req.body.parsedOpeningHours = parseOpeningHours(value)
                 delete req.body.openingHours
@@ -113,7 +113,7 @@ router.post(
             }
             return true
         }),
-        body('parsedOpeningHours').optional(openingHoursValidator)
+        body('parsedOpeningHours').exists().custom(openingHoursValidatorExpress)
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,

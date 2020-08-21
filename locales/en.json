@@ -16,5 +16,7 @@
 	"contact.email.validation": "Email is invalid",
 	"contact.phone.validation": "Phone number is invalid",
 	"images.title.validation": "images.title.validation",
-	"images.profile.validation": "images.profile.validation"
+	"images.profile.validation": "images.profile.validation",
+	"openingHours.validation": "openingHours.validation",
+	"parsedOpeningHours.validation": "parsedOpeningHours.validation"
 }

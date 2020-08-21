@@ -52,25 +52,29 @@ const validateOpeningHours = (openingHours) => {
         const segments = openingHours[day]
 
         // Rule 0
-        if (segments.length > 10) {
+        if (segments.length > 2) {
+            console.log('meh')
             return false
         }
 
         // Rule 0,5
         const invalidValue = -1 !== segments.findIndex(segment => !validSegmentRange(segment))
         if (invalidValue) {
+            console.log('meh1')
             return false
         }
 
         // Rule 1
         const allDayOpen = -1 !== segments.findIndex(segment => segment.open === 0 && segment.close === 0)
         if (allDayOpen && segments.length > 1) {
+            console.log('meh2')
             return false
         }
 
         // Rule 2
         const badSegments = segments.filter(segment => segment.open >= segment.close)
         if (!allDayOpen && badSegments.length > 0) {
+            console.log('meh3')
             return false
         }
     }    
@@ -90,7 +94,9 @@ export const openingHoursValidatorMongoose = {
 
 export const openingHoursValidatorExpress = (openingHours, { req, location, path }) => {
     try {
-        return validateOpeningHours(openingHours)        
+        const valid = validateOpeningHours(openingHours)
+        if (!valid) throw new Error()
+        return valid
     } catch (error) {
         throw new Error(req.__(`${path}.validation`))
     }

@@ -150,6 +150,15 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 },
                 slug: 'hehehe u got hacked',
                 author: defaultUser,
+                openingHours: {
+                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                },
                 published: true
             })
 
@@ -203,7 +212,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     })
     
     test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED`, async () => {
-        const { status, body, error } = await request(server)
+        const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({
@@ -281,7 +290,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(OK)
     })
 
-    test(`PUT ${apiRoot}/${apiEndpoint}/:id USER FORBIDDEN (OWNERSHIP)`, async () => {
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id USER FORBIDDEN ownership`, async () => {
         const { status, body } = await request(server)
             .put(`${apiRoot}/${apiEndpoint}/${adminShop._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -323,7 +332,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(NO_CONTENT)
     })
 
-    test(`DELETE ${apiRoot}/${apiEndpoint}/:id USER FORBIDDEN (OWNERSHIP)`, async () => {
+    test(`DELETE ${apiRoot}/${apiEndpoint}/:id USER FORBIDDEN ownership`, async () => {
         const { status, body } = await request(server)
             .delete(`${apiRoot}/${apiEndpoint}/${adminShop._id}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -428,9 +437,138 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 address: {
                     locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
                 },
+                openingHours: {
+                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                }
             })
         
         expect(status).toBe(CREATED)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST alldayOpen + more segments`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                openingHours: {
+                    monday: [{ open: '00:00', close: '00:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST closing before opening`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                openingHours: {
+                    monday: [{ open: '13:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST 2 breaks`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                openingHours: {
+                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }, { open: '19:00', close: '20:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid values`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                openingHours: {
+                    monday: [{ open: '13:00', close: '12:00' }, { open: 'lel?', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid values`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                openingHours: {
+                    monday: [{ open: '13:00', close: '12:00' }, { open: '17:61', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
     })
 
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid title image`, async () => {
