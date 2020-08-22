@@ -113,7 +113,10 @@ router.post(
             }
             return true
         }),
-        body('parsedOpeningHours').exists().custom(openingHoursValidatorExpress)
+        body('parsedOpeningHours').exists().custom(openingHoursValidatorExpress),
+        body('deliveryOptions.localDelivery').optional().isBoolean(),
+        body('deliveryOptions.pickUp').optional().isBoolean(),
+        body('deliveryOptions.mail').optional().isBoolean()
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,
@@ -254,7 +257,21 @@ router.put('/:id',
                 }
                 return true
         }),
-        body('address.locationId').optional().isString().notEmpty()
+        body('address.locationId').optional().isString().notEmpty(),
+        body('openingHours').optional().custom((value, { req, location, path }) => {
+            try {
+                req.body.parsedOpeningHours = parseOpeningHours(value)
+                delete req.body.openingHours
+                // validate
+            } catch (error) {
+                throw new Error(req.__(`${path}.validation`))
+            }
+            return true
+        }),
+        body('parsedOpeningHours').optional().custom(openingHoursValidatorExpress),
+        body('deliveryOptions.localDelivery').optional().isBoolean(),
+        body('deliveryOptions.pickUp').optional().isBoolean(),
+        body('deliveryOptions.mail').optional().isBoolean()
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,

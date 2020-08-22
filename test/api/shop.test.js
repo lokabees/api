@@ -257,7 +257,12 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     sunday: []
                 },
                 author: defaultUser,
-                published: true
+                published: true,
+                deliveryOptions: {
+                    localDelivery: true,
+                    pickUp: true,
+                    mail: true
+                }
             })
 
         expect(status).toBe(CREATED)
@@ -460,6 +465,33 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
             })
         
         expect(status).toBe(CREATED)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST delivery options`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                },
+                openingHours: {
+                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                },
+                deliveryOptions: {
+                    localDelivery: 'yes'
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
     })
 
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST alldayOpen + more segments`, async () => {
