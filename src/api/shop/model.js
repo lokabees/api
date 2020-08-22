@@ -71,6 +71,24 @@ const shopSchema = new Schema(
             type: String,
             required: true // validation?
         },
+        newAddress: {
+            country: { type: String, required: true },
+            city: { type: String, required: true },
+            postalCode: { type: Number, required: true },
+            street: { type: String, required: true },
+            houseNumber: { type: String, required: true },
+            optional: { type: String, required: false },
+            coordinates: {
+                latitude: {
+                    type: Number,
+                    required: true
+                },
+                longitude: {
+                    type: Number,
+                    required: true
+                }
+            }
+        },
         address: {
             label: { type: String, required: true },
             city: { type: String, required: true },
