@@ -13,10 +13,12 @@
 	"contact.instagram.validation": "Instagram URI is invalid",
 	"contact.website.validation": "Website URI is invalid",
 	"contact.facebook.validation": "Facebook URI is invalid",
-	"contact.email.validation": "Email is invalid",
+	"contact.email.validation": "E-Mail is invalid",
 	"contact.phone.validation": "Phone number is invalid",
 	"images.title.validation": "images.title.validation",
 	"images.profile.validation": "images.profile.validation",
 	"openingHours.validation": "openingHours.validation",
-	"parsedOpeningHours.validation": "parsedOpeningHours.validation"
+	"parsedOpeningHours.validation": "parsedOpeningHours.validation",
+	"password.validation": "Password does not match requirements",
+	"email.validation": "E-Mail is in the wrong format"
 }

@@ -28,7 +28,7 @@ export const show = async ({ user: { _id, role }, method, params: { id } }, res)
     }
 }
 
-export const create = async ({ bodymen: { body }, method, user }, res, next) => {
+export const create = async ({ body , method, user }, res, next) => {
     try {
 
         if (await User.findOne({ email: body.email }) !== null) {
@@ -48,7 +48,7 @@ export const create = async ({ bodymen: { body }, method, user }, res, next) => 
     }
 }
 
-export const update = async ({ bodymen: { body }, params, user, method }, res, next) => {
+export const update = async ({ body, params, user, method }, res, next) => {
     try {
         const doc = await User.findById(params.id)
 
@@ -70,7 +70,7 @@ export const update = async ({ bodymen: { body }, params, user, method }, res, n
     }
 }
 
-export const updatePassword = async ({ bodymen: { body }, params, user }, res, next) => {
+export const updatePassword = async ({ body, params, user }, res, next) => {
     try {
         const doc = await User.findById(params.id)
 

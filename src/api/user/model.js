@@ -52,7 +52,7 @@ const userSchema = new Schema(
         },
         verified: {
             type: Boolean,
-            default: env === 'development'
+            default: false
         },
         activeShop: {
             type: Schema.Types.ObjectId,

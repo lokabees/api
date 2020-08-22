@@ -1,4 +1,3 @@
-
 import 'dotenv/config'
 import request from 'supertest'
 import server from '~/server'

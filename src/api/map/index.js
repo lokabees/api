@@ -30,6 +30,7 @@ const router = new Router()
  *        "500":
  *          description: Oh boi
  */
+// TODO: express-validator for query
 router.get(
     '/suggest',
     suggest

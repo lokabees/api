@@ -1,7 +1,9 @@
 import { Router } from 'express'
-import { middleware as body } from 'bodymen'
+import { body } from 'express-validator'
 import { authenticate, providerAuthenticate, logout, logoutAll } from './controller'
 import { masterman } from '~/services/auth'
+import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
+import { passwordValidator } from '~/utils/validator'
 
 /**
  * @swagger
@@ -58,16 +60,15 @@ const router = new Router()
 router.post(
     '',
     masterman(),
-    body({
-        email: {
-            type: String,
-            required: true
-        },
-        password: {
-            type: String,
-            required: true
-        }
-    }),
+    [
+        body('email').exists().normalizeEmail().isEmail(),
+        body('password')
+            .exists()
+            .matches(passwordValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     authenticate
 )
 
@@ -108,8 +109,6 @@ router.post('/logout', logout)
  *          description: Oh boi
  */
 router.post('/logout/all', logoutAll)
-
-
 
 /**
  * @swagger
@@ -160,12 +159,13 @@ router.post('/logout/all', logoutAll)
  */
 router.post(
     '/:provider',
-    body({
-        accessToken: {
-            type: String,
-            required: true
-        }
-    }),
+    [
+        body('accessToken')
+            .exists()
+            .isString()
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     providerAuthenticate
 )
 

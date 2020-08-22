@@ -143,10 +143,11 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
             .send({ email: 'marty2@getit.social', password: 'SoEinGutesPasswortOmg123?!', name: 'Marty' })
 
+        expect(status).toBe(CREATED)
+
         const { verified } = await User.findOne({ email: 'marty2@getit.social' })
         expect(verified).toBe(false)
 
-        expect(status).toBe(CREATED)
         const keys = Object.keys(body)
         expect(keys).toEqual(expect.arrayContaining(['_id', 'verified', 'role', 'name', 'email']))
     })
@@ -346,12 +347,16 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
         expect(status).toBe(BAD_REQUEST)
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST UNAUTHORIZED ROLE`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED ROLE IMMUTABLE`, async () => {
         const { status } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
             .send({ email: 'marty3@getit.social', password: 'Passwort123?!!!?', name: 'Marty', role: 'admin' })
 
-        expect(status).toBe(UNAUTHORIZED)
+        expect(status).toBe(CREATED)
+        
+        const { role } = await User.findOne({ email: 'marty3@getit.social' })
+        expect(role).toBe('user')
+
     })
 
     test(`PUT ${apiRoot}/${apiEndpoint}/:id/password USER BAD_REQUEST`, async () => {
@@ -385,7 +390,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
 describe(`TEST ${apiRoot}/${apiEndpoint} PASSWORD HASHED`, () => {
 
     // CREATE
-    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST BAD_REQUEST PASSWORD`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED PASSWORD`, async () => {
         const { status, body: { _id } } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
             .send({ email: 'marty2@getit.social', password: 'Passwort123?!?1', name: 'Marty' })
