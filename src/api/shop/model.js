@@ -232,50 +232,6 @@ shopSchema.pre('validate', async function(next) {
     next()
 })
 
-// request adress data if locationId changed
-shopSchema.pre('validate', async function(next) {
-    if (!this.isModified('address.locationId')) {
-        next()
-        return
-    }
-    
-    // HERE API request
-    try {
-        const res = await request({
-            uri: `https://geocoder.ls.hereapi.com/6.2/geocode.json?locationid=${this.address.locationId}&jsonattributes=1&gen=9&apiKey=${hereConfig.apiKey}`,
-            json: true,
-        })
-        const {
-            response: {
-                view: [
-                    {
-                        result: [
-                            {
-                                location
-                            },
-                        ],
-                    },
-                ],
-            },
-        } = res
-        this.address = location.address
-        this.address.locationId = location.locationId
-        this.address.displayPosition = location.displayPosition
-    } catch(error) {
-        /*
-        How do we handle errors?
-            1. Retry here request
-            2. Fail with 500
-            3. Make adress optional, dont allow publishing
-        */
-        return next(error)
-    }
-})
-
-shopSchema.virtual('address.display').get(function () {
-    return `${this.address.street} ${this.address.houseNumber}, ${this.address.postalCode} ${this.address.city}`
-})
-
 shopSchema.plugin(filter, { rules })
 shopSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })
 shopSchema.plugin(ownership)
