@@ -25,7 +25,7 @@ const userSchema = new Schema(
         },
         password: {
             type: String,
-            required: true,
+            required: false,
             validate: {
                 validator: (value) => passwordValidator.test(value),
                 message: props => 'Password is invalid'
