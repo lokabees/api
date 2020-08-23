@@ -7,7 +7,6 @@ import compression from 'compression'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import { errorHandler as queryErrorHandler } from 'querymen'
-import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env, rateLimiter, i18nConfig, fileUploadConfig } from '~/config'
 import acl from './acl'
 import swagger from './swagger'
@@ -48,7 +47,6 @@ export default (apiRoot, routes) => {
     app.use(acl.authorize)
     app.use(apiRoot, routes)
     app.use(queryErrorHandler())
-    app.use(bodyErrorHandler())
 
     return app
 }

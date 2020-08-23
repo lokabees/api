@@ -7,7 +7,7 @@ import {
 } from './controller'
 
 const router = new Router()
-const { token } = schema.tree
+
 /**
  * @swagger
  * tags:

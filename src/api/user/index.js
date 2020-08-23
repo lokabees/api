@@ -1,10 +1,11 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
-import { middleware as body } from 'bodymen'
-import { masterman, validateUserBeforeCreate } from 's/auth'
+import { body } from 'express-validator'
+import { masterman } from 's/auth'
 import { schema } from './model'
+import { passwordValidator } from '~/utils/validator'
+import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
 export User, { schema } from './model'
-import { passwordValidator, emailValidator } from '~/utils/validator'
 
 import {
     index,
@@ -23,7 +24,6 @@ import {
  */
 
 const router = new Router()
-const { email, password, name, picture, role } = schema.tree
 // TODO: Pagination docs
 /**
  * @swagger
@@ -108,30 +108,28 @@ router.get('/:id', show)
 router.post(
     '/',
     masterman(),
-    validateUserBeforeCreate(),
-    body({
-        email: {
-            ...email,
-            validate: (value) => (
-                {
-                    valid: emailValidator.test(value),
-                    message: 'Email is invalid'
+    [
+        body('name').exists().isString().notEmpty(),
+        body('email').exists().normalizeEmail().isEmail(),
+        body('password')
+            .exists()
+            .matches(passwordValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
+        body('picture')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
                 }
-            )
-        },
-        password: {
-            ...password,
-            validate: (value) => (
-                {
-                    valid: passwordValidator.test(value),
-                    message: 'Password is invalid'
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
                 }
-            )
-        },
-        name,
-        picture,
-        role
-    }),
+                return true
+        }),
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     create
 )
 
@@ -175,7 +173,26 @@ router.post(
  *        "500":
  *          description: Oh boi
  */
-router.put('/:id', body({ name, picture }), update)
+router.put('/:id', 
+    [
+        body('name').optional().isString().notEmpty(),
+        body('picture')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        })
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
+    update
+)
 
 /**
  * @swagger
@@ -214,19 +231,15 @@ router.put('/:id', body({ name, picture }), update)
  *        "500":
  *          description: Oh boi
  */
-router.put(
-    '/:id/password',
-    body({
-        password: {
-            ...password,
-            validate: (value) => (
-                {
-                    valid: passwordValidator.test(value),
-                    message: 'Password is invalid'
-                }
-            )
-        },
-    }),
+router.put('/:id/password',
+    [
+        body('password')
+            .optional()
+            .matches(passwordValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     updatePassword
 )
 
@@ -259,3 +272,6 @@ router.put(
 router.delete('/:id', destroy)
 
 export default router
+
+
+// TODO: Add user shop management stuff

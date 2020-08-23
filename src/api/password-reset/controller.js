@@ -22,7 +22,7 @@ export const show = async ({ params: { token } }, res, next) => {
     }
 }
 
-export const create = async ({ bodymen: { body: { email } } }, res, next) => {
+export const create = async ({ body: { email } }, res, next) => {
     try {
         const user = await User.findOne({ email })
 
@@ -45,7 +45,7 @@ export const create = async ({ bodymen: { body: { email } } }, res, next) => {
 
 }
 
-export const update = async ({ bodymen: { body: { password }}, params: { token } }, res, next) => {
+export const update = async ({ body: { password }, params: { token } }, res, next) => {
 
     try {
         const { user } = await PasswordReset.findOne({ token }).populate('user') ?? {}

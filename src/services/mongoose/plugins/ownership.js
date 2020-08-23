@@ -8,7 +8,7 @@
  * @param {*} [{ custom }={}] pass a custom checkOwnership function which will get used instead of the default
  */
 export default function ownership(schema, { custom } = {}) {
-    schema.statics.isOwner = function(doc, user) {
+    schema.statics.isOwner = function(doc, user = {}) {
         if (custom) {
             return custom(doc, user)
         }

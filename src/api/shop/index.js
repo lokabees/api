@@ -1,12 +1,16 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
-import { middleware as body } from 'bodymen'
 import { addAuthor } from 's/request'
 import { create, index, show, update, destroy } from './controller'
 import { schema } from './model'
+import { body } from 'express-validator'
 export Shop, { schema } from './model'
+import { facebookValidator, instagramValidator, websiteValidator, cloudinaryValidator, parseOpeningHours, openingHoursValidatorExpress } from '~/utils/validator'
+import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
-const { content } = schema.tree
+// TODO: Refactor the validation maybe
+
 /**
  * @swagger
  * tags:
@@ -18,7 +22,7 @@ const router = new Router()
 /**
  * @swagger
  * path:
- *  api/shops/:
+ *  /api/shops/:
  *    post:
  *      summary: Create a new Shop
  *      tags: [Shops]
@@ -49,10 +53,82 @@ const router = new Router()
  */
 router.post(
     '/',
-    body({
-        content
-    }),
-    addAuthor({ required: false, addBody: true }),
+    addAuthor({ required: true, addBody: true }),
+    [
+        body('name').exists().isString().notEmpty(),
+        body('author').exists(),
+        body('published').optional().isBoolean(),
+        body('description').exists().isString().trim().escape(),
+        body('contact.email').optional().normalizeEmail().isEmail(),
+        body('contact.instagram')
+            .optional()
+            .matches(instagramValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
+        body('contact.website')
+            .optional()
+            .matches(websiteValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
+        body('contact.facebook')
+            .optional()
+            .matches(facebookValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
+        body('contact.phone').optional().custom((value, { req }) => {
+            if (!parsePhoneNumberFromString(value).isValid()) {
+                throw new Error(req.__(`${path}.validation`)) 
+            }
+            return true
+        }),
+        body('images.title')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        }),
+        body('images.profile')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        }),
+        body('address.country').exists().isString(),
+        body('address.city').exists().isString(),
+        body('address.postalCode').exists().isString(),
+        body('address.street').exists().isString(),
+        body('address.number').exists().isString(),
+        body('address.optional').optional().isString(),
+        body('address.locality').exists().isString(),
+        body('address.geometry.type').exists().isString().equals('Point'),
+        body('address.geometry.coordinates').exists().isArray().isLength(2),
+        body('address.geometry.coordinates.*').isFloat(),
+        body('openingHours').exists().custom((value, { req, location, path }) => {
+            try {
+                req.body.parsedOpeningHours = parseOpeningHours(value)
+                delete req.body.openingHours
+                // validate
+            } catch (error) {
+                throw new Error(req.__(`${path}.validation`))
+            }
+            return true
+        }),
+        body('parsedOpeningHours').exists().custom(openingHoursValidatorExpress),
+        body('deliveryOptions.localDelivery').optional().isBoolean(),
+        body('deliveryOptions.pickUp').optional().isBoolean(),
+        body('deliveryOptions.mail').optional().isBoolean()
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     create
 )
 
@@ -60,7 +136,7 @@ router.post(
 /**
  * @swagger
  * path:
- *  api/shops/:
+ *  content/api/shops/:
  *    get:
  *      summary: Get shops
  *      tags: [Shops]
@@ -75,11 +151,10 @@ router.post(
  *          description: Oh boi
  */
 router.get('/', query(), index)
-
 /**
  * @swagger
  * path:
- *  api/shops/{shopId}:
+ *  /api/shops/{shopId}:
  *    get:
  *      summary: Get Shop
  *      tags: [Shops]
@@ -107,7 +182,7 @@ router.get('/:id', show)
 /**
  * @swagger
  * path:
- *  api/shops/{shopId}:
+ *  /api/shops/{shopId}:
  *    put:
  *      summary: Update shop
  *      tags: [Shops]
@@ -141,12 +216,81 @@ router.get('/:id', show)
  *        "500":
  *          description: Oh boi
  */
-router.put('/:id', body({ content }), update)
+router.put('/:id',
+    [
+        body('name').optional().isString().notEmpty(),
+        body('published').optional().isBoolean(),
+        body('description').optional().isString().trim().escape(),
+        body('contact.email').optional().normalizeEmail().isEmail(),
+        body('contact.instagram')
+            .optional()
+            .matches(instagramValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.website')
+            .optional()
+            .matches(websiteValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.facebook')
+            .optional()
+            .matches(facebookValidator)
+            .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
+        body('contact.phone').optional().custom((value, { req }) => {
+            if (!parsePhoneNumberFromString(value).isValid()) {
+                throw new Error(req.__('contact.phone.validation')) 
+            }
+            return true
+        }),
+        body('images.title')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                console.log(value)
+                if (req.body.title.url === undefined || req.body.title.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = req.body.title.url.match(cloudinaryValidator)
+                console.log(match)
+                if (match === null || req.body.title.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        }),
+        body('images.profile')
+            .optional()
+            .custom((value, { req, location, path }) => {
+                if (value.url === undefined || value.id === undefined) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        }),
+        body('address.locationId').optional().isString().notEmpty(),
+        body('openingHours').optional().custom((value, { req, location, path }) => {
+            try {
+                req.body.parsedOpeningHours = parseOpeningHours(value)
+                delete req.body.openingHours
+                // validate
+            } catch (error) {
+                throw new Error(req.__(`${path}.validation`))
+            }
+            return true
+        }),
+        body('parsedOpeningHours').optional().custom(openingHoursValidatorExpress),
+        body('deliveryOptions.localDelivery').optional().isBoolean(),
+        body('deliveryOptions.pickUp').optional().isBoolean(),
+        body('deliveryOptions.mail').optional().isBoolean()
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
+    update
+)
 
 /**
  * @swagger
  * path:
- *  api/shops/{shopId}:
+ *  /api/shops/{shopId}:
  *    delete:
  *      summary: Delete shop
  *      tags: [Shops]

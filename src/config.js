@@ -17,6 +17,9 @@ const config = {
         apiRoot: process.env.API_ROOT || '/api',
         masterKey: requireProcessEnv('MASTER_KEY'),
         maxSessionCount: 10,
+        hereConfig: {
+            apiKey: requireProcessEnv('HERE_API')
+        },
         jwtConfig: {
             secret: requireProcessEnv('JWT_SECRET'),
             credentialsRequired: false,
@@ -44,6 +47,9 @@ const config = {
                 forgot: 'd-ac2e091839ab4112b1be2ff7d9d2d6d3'
             },
             defaultEmail: 'no-reply@your-website.com'
+        },
+        mapbox: {
+            accessToken: requireProcessEnv('MAPBOX_KEY')
         },
         cloudinaryConfig: {
             cloud_name: requireProcessEnv('CLOUDINARY_CLOUD_NAME'),

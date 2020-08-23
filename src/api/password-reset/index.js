@@ -1,9 +1,9 @@
 import { Router } from 'express'
 export PasswordReset, { schema } from './model'
 import { masterman } from '~/services/auth'
-import { middleware as body } from 'bodymen'
-import { schema as userSchema } from 'a/user/model'
-import { passwordValidator, emailValidator } from '~/utils/validator'
+import { body } from 'express-validator'
+import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
+import { passwordValidator } from '~/utils/validator'
 import {
     create,
     show,
@@ -18,8 +18,6 @@ import {
  */
 
 const router = new Router()
-
-const { email, password } = userSchema.tree
 
 /**
  * @swagger
@@ -86,17 +84,19 @@ router.get('/:token', show)
 router.post(
     '',
     masterman(),
-    body({
-        email: {
-            ...email,
-            validate: (value) => (
-                {
-                    valid: emailValidator.test(value),
-                    message: 'Email is invalid'
-                }
-            )
-        },
-    }),
+    [
+        body('email')
+            .optional()
+            .normalizeEmail()
+            .isEmail()
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
+        body('password')
+            .optional()
+            .matches(passwordValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`))
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     create
 )
 
@@ -135,17 +135,14 @@ router.post(
  */
 router.patch(
     '/:token',
-    body({
-        password: {
-            ...password,
-            validate: (value) => (
-                {
-                    valid: passwordValidator.test(value),
-                    message: 'Password is invalid'
-                }
-            )
-        },
-    }),
+    [
+        body('password')
+            .optional()
+            .matches(passwordValidator)
+            .withMessage((_, { req, location, path }) => req.__(`${path}.validation`))
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
     update
 )
 
