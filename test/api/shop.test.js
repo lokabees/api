@@ -42,7 +42,21 @@ beforeEach(async () => {
         },
         description: 'Kekse sind toll.',
         address: {
-            locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+            name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+            geometry: {
+              type: 'Point',
+              coordinates: [
+                8.422082,
+                49.019587
+              ]
+            },
+            number: '28',
+            street: 'Klosterweg',
+            postalCode: '76131',
+            city: 'Karlsruhe',
+            state: 'Baden-Württemberg',
+            country: 'Deutschland',
+            locality: 'Oststadt Nördlicher Teil'
         },
         parsedOpeningHours: parseOpeningHours({
             monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
@@ -68,7 +82,21 @@ beforeEach(async () => {
         },
         description: 'Kekse sind toll.',
         address: {
-            locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+            name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+            geometry: {
+              type: 'Point',
+              coordinates: [
+                8.422082,
+                49.019587
+              ]
+            },
+            number: '28',
+            street: 'Klosterweg',
+            postalCode: '76131',
+            city: 'Karlsruhe',
+            state: 'Baden-Württemberg',
+            country: 'Deutschland',
+            locality: 'Oststadt Nördlicher Teil'
         },
         author: adminUser,
         published: true
@@ -155,7 +183,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 },
                 description: 'Kekse sind toll.',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 slug: 'hehehe u got hacked',
                 author: defaultUser,
@@ -170,19 +212,6 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 },
                 published: true
             })
-
-        // make sure here api request worked
-        expect(body.address.label).not.toBeUndefined()
-        expect(body.address.city).not.toBeUndefined()
-        expect(body.address.country).not.toBeUndefined()
-        expect(body.address.county).not.toBeUndefined()
-        expect(body.address.district).not.toBeUndefined()
-        expect(body.address.houseNumber).not.toBeUndefined()
-        expect(body.address.locationId).not.toBeUndefined()
-        expect(body.address.state).not.toBeUndefined()
-        expect(body.address.street).not.toBeUndefined()
-        expect(body.address.postalCode).not.toBeUndefined()
-        expect(body.address.displayPosition).not.toBeUndefined()
 
         // slug got generated
         expect(body.slug).not.toBeUndefined()
@@ -210,7 +239,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 },
                 description: 'Kekse sind toll.',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 author: defaultUser,
                 published: true
@@ -235,7 +278,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 },
                 description: 'Kekse sind toll.',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
                     title: {
@@ -266,19 +323,6 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             })
 
         expect(status).toBe(CREATED)
-
-        // make sure here api request worked
-        expect(body.address.label).not.toBeUndefined()
-        expect(body.address.city).not.toBeUndefined()
-        expect(body.address.country).not.toBeUndefined()
-        expect(body.address.county).not.toBeUndefined()
-        expect(body.address.district).not.toBeUndefined()
-        expect(body.address.houseNumber).not.toBeUndefined()
-        expect(body.address.locationId).not.toBeUndefined()
-        expect(body.address.state).not.toBeUndefined()
-        expect(body.address.street).not.toBeUndefined()
-        expect(body.address.postalCode).not.toBeUndefined()
-        expect(body.address.displayPosition).not.toBeUndefined()
 
         // slug got generated
         expect(body.slug).not.toBeUndefined()
@@ -373,9 +417,8 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     })
  
 })
- 
-describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
 
+  describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing name`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
@@ -390,7 +433,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 },
                 description: 'Kekse sind toll.',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 author: defaultUser,
                 published: true
@@ -413,7 +470,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                     email: 'claudia@kekse.de',   
                 },
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 author: defaultUser,
                 published: true
@@ -422,7 +493,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
         expect(status).toBe(BAD_REQUEST)
     })
  
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing locationId`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing address`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -451,7 +522,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
                     monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
@@ -463,7 +548,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                     sunday: []
                 }
             })
-        
+
         expect(status).toBe(CREATED)
     })
 
@@ -475,7 +560,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
                     monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
@@ -502,7 +601,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
                     monday: [{ open: '00:00', close: '00:00' }, { open: '13:00', close: '18:00' }],
@@ -526,7 +639,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
                     monday: [{ open: '13:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
@@ -550,7 +677,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
                     monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }, { open: '19:00', close: '20:00' }],
@@ -574,7 +715,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
                     monday: [{ open: '13:00', close: '12:00' }, { open: 'lel?', close: '18:00' }],
@@ -598,7 +753,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
                     monday: [{ open: '13:00', close: '12:00' }, { open: '17:61', close: '18:00' }],
@@ -622,7 +791,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
                     title: {
@@ -643,7 +826,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
                     title: {
@@ -664,7 +861,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
                     profile: {
@@ -685,7 +896,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 name: 'Kekse!',
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
                     profile: {
@@ -709,7 +934,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 },
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
             })
         
@@ -727,8 +966,23 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 },
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
+
             })
 
         expect(status).toBe(BAD_REQUEST)
@@ -745,7 +999,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 },
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
             })
 
@@ -763,7 +1031,21 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 },
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
             })
 
@@ -781,11 +1063,24 @@ describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
                 },
                 description: 'hi',
                 address: {
-                    locationId: 'NT_0OLEZjK0pT1GkekbvJmsHC_yYD'
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postalCode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
                 },
             })
 
         expect(status).toBe(BAD_REQUEST)
     })
- 
 })

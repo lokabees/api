@@ -102,7 +102,16 @@ router.post(
                 }
                 return true
         }),
-        body('address.locationId').exists().isString().notEmpty(),
+        body('address.country').exists().isString(),
+        body('address.city').exists().isString(),
+        body('address.postalCode').exists().isString(),
+        body('address.street').exists().isString(),
+        body('address.number').exists().isString(),
+        body('address.optional').optional().isString(),
+        body('address.locality').exists().isString(),
+        body('address.geometry.type').exists().isString().equals('Point'),
+        body('address.geometry.coordinates').exists().isArray().isLength(2),
+        body('address.geometry.coordinates.*').isFloat(),
         body('openingHours').exists().custom((value, { req, location, path }) => {
             try {
                 req.body.parsedOpeningHours = parseOpeningHours(value)

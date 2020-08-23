@@ -71,48 +71,24 @@ const shopSchema = new Schema(
             type: String,
             required: true // validation?
         },
-        newAddress: {
-            country: { type: String, required: true },
-            city: { type: String, required: true },
-            postalCode: { type: Number, required: true },
-            street: { type: String, required: true },
-            houseNumber: { type: String, required: true },
-            optional: { type: String, required: false },
-            coordinates: {
-                latitude: {
-                    type: Number,
-                    required: true
-                },
-                longitude: {
-                    type: Number,
-                    required: true
-                }
-            }
-        },
+        // figure out how to do i18n
         address: {
-            label: { type: String, required: true },
-            city: { type: String, required: true },
             country: { type: String, required: true },
-            county: { type: String, required: true },
-            district: { type: String, required: true },
-            houseNumber: { type: String, required: true },
-            locationId: {
-                type: String,
-                required: true,
-                description: 'locationId is the only field which is actually required from the frontend, all other fields are functionally dependent and can (and should) come directly from the HERE api'
-            },
-            state: { type: String, required: true },
-            street: { type: String, required: true },
+            city: { type: String, required: true },
             postalCode: { type: Number, required: true },
-            displayPosition: {
-                latitude: {
-                    type: Number,
+            street: { type: String, required: true },
+            number: { type: String, required: true },
+            optional: { type: String, required: false },
+            locality: { type: String, required: false },
+            geometry: {
+                type: {
+                    type: String,
                     required: true
                 },
-                longitude: {
+                coordinates: [{
                     type: Number,
                     required: true
-                }
+                }]
             }
         },
         images: {

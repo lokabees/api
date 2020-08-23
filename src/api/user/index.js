@@ -272,3 +272,6 @@ router.put('/:id/password',
 router.delete('/:id', destroy)
 
 export default router
+
+
+// TODO: Add user shop management stuff

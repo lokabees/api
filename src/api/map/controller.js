@@ -1,4 +1,4 @@
-import { OK } from 'http-status-codes'
+import { OK, NOT_FOUND } from 'http-status-codes'
 import { errorHandler } from 's/response'
 import mbx from '@mapbox/mapbox-sdk/services/geocoding'
 import { mapbox } from '~/config'
@@ -10,25 +10,29 @@ export const suggest = async ({ query }, res, next) => {
     try {
         const { body: { features }} = await geocodingClient.forwardGeocode({
             query: query.q,
-            limit: 2,
+            limit: 1,
             countries: ['DE'],
             language: ['DE']
         }).send()
 
         // we kinda want to filter the huge response object...
-        const data = []
-        features.forEach((feature) => {
-            data.push({
-                name: feature.place_name,
-                geometry: feature.geometry,
-                number: feature.address,
-                postcode: findContext(feature, 'postcode'),
-                city: findContext(feature, 'place'),
-                state: findContext(feature, 'region'),
-                country: findContext(feature, 'country'),
-                locality: findContext(feature, 'locality')
-            })
-        })
+        if (features.length === 0) {
+            res.status(NOT_FOUND).end()
+            return
+        }
+        const feature = features[0]
+        const data = {
+            name: feature.place_name,
+            geometry: feature.geometry,
+            number: feature.address,
+            street: feature.text,
+            postcode: findContext(feature, 'postcode'),
+            city: findContext(feature, 'place'),
+            state: findContext(feature, 'region'),
+            country: findContext(feature, 'country'),
+            locality: findContext(feature, 'locality')
+        }
+
         res.status(OK).json(data)
     } catch (error) {
         errorHandler(res, error)
