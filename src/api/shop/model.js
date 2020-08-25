@@ -92,7 +92,7 @@ const shopSchema = new Schema(
             }
         },
         images: {
-            title: {
+            cover: {
                 url: { type: String, default: 'cdn-link' },
                 id: { type: String, default: 'placeholder' }
             },

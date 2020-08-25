@@ -15,7 +15,7 @@
 	"contact.facebook.validation": "Facebook URI is invalid",
 	"contact.email.validation": "E-Mail is invalid",
 	"contact.phone.validation": "Phone number is invalid",
-	"images.title.validation": "images.title.validation",
+	"images.cover.validation": "images.cover.validation",
 	"images.profile.validation": "images.profile.validation",
 	"openingHours.validation": "openingHours.validation",
 	"parsedOpeningHours.validation": "parsedOpeningHours.validation",
