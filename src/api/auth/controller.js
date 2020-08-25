@@ -15,7 +15,7 @@ export const authenticate = async ({ body: { email, password }, device }, res, n
     // Pass value
     try {
         // Find user
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email }).select('+password')
 
         if (!user) {
             // We do not want to tell the user that the email doesnt exist...

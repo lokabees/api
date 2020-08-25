@@ -171,7 +171,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint}`,  () => {
             .patch(`${apiRoot}/${apiEndpoint}/${token}`)
             .send({ password: 'Passwort123?!!?' })
 
-        const updatedUser = await User.findById(defaultUser._id)
+        const updatedUser = await User.findById(defaultUser._id).select('+password')
         expect(status).toBe(NO_CONTENT)
         expect(oldUser.password).not.toBe(updatedUser.password)
         const reset = await PasswordReset.findOne({ token })
