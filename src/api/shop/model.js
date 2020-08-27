@@ -111,6 +111,12 @@ const shopSchema = new Schema(
             required: true,
             description: 'unpublished shops will not be accessible for the public (only owner+author+admin)'
         },
+        categories: [
+            {
+                type: 'ObjectId',
+                ref: 'ShopCategory'
+            }
+        ],
         parsedOpeningHours: {
             type: Object,
             monday: [{ open: { type: Number }, close: { type: Number } }],
