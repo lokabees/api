@@ -104,7 +104,7 @@ router.post(
         }),
         body('address.country').exists().isString(),
         body('address.city').exists().isString(),
-        body('address.postalCode').exists().isString(),
+        body('address.postcode').exists().isString(),
         body('address.street').exists().isString(),
         body('address.number').exists().isString(),
         body('address.optional').optional().isString(),
