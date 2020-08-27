@@ -2,6 +2,8 @@ import { Shop } from '.'
 import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 import { errorHandler } from 's/response'
 import { isObjectId } from '~/utils/validator'
+import { ShopCategory } from './model'
+
 // Get all
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
@@ -17,6 +19,16 @@ export const index = async ({ querymen, user, method }, res, next) => {
         })
 
         res.status(OK).json(shops)
+    } catch (error) {
+        errorHandler(res, error)
+    }
+}
+
+// Get all
+export const getCategories = async (req, res, next) => {
+    try {
+        const categories = await ShopCategory.find().sort({ name: 1 }).lean()
+        res.status(OK).json(categories)
     } catch (error) {
         errorHandler(res, error)
     }
