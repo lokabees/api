@@ -75,7 +75,7 @@ const shopSchema = new Schema(
         address: {
             country: { type: String, required: true },
             city: { type: String, required: true },
-            postalCode: { type: Number, required: true },
+            postcode: { type: Number, required: true },
             street: { type: String, required: true },
             number: { type: String, required: true },
             optional: { type: String, required: false },
