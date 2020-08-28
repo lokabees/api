@@ -28,7 +28,8 @@ export const index = async ({ querymen, user, method }, res, next) => {
 export const getCategories = async (req, res, next) => {
     try {
         const categories = await ShopCategory.find().sort({ name: 1 }).lean()
-        res.status(OK).json(categories)
+        const obj = Object.fromEntries(categories.map(e => [e._id, e.name]))
+        res.status(OK).json(obj)
     } catch (error) {
         errorHandler(res, error)
     }
