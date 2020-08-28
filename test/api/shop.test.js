@@ -315,7 +315,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 },
                 author: defaultUser,
                 published: true,
-                delivery: ['MD']
+                delivery: ['MD', 'LD']
             })
 
         expect(status).toBe(CREATED)

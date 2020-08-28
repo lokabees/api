@@ -124,7 +124,7 @@ router.post(
         }),
         body('parsedOpeningHours').exists().custom(openingHoursValidatorExpress),
         body('delivery').optional().isArray(),
-        body('delivery.*').optional().isIn('MD', 'LD', 'PU')
+        body('delivery.*').optional().isIn(['MD', 'LD', 'PU'])
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,
@@ -300,7 +300,7 @@ router.put('/:id',
         }),
         body('parsedOpeningHours').optional().custom(openingHoursValidatorExpress),
         body('delivery').optional().isArray(),
-        body('delivery.*').optional().isIn('MD', 'LD', 'PU')
+        body('delivery.*').optional().isIn(['MD', 'LD', 'PU'])
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,
