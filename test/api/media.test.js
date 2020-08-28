@@ -80,6 +80,16 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(CREATED)
     })
 
+    test(`POST ${apiRoot}/${apiEndpoint}/shop USER CREATED`, async () => {
+        const { status, body: { id } } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}/shop`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .attach('file', filePath)
+
+        images.push(id)
+        expect(status).toBe(CREATED)
+    })
+
     test(`POST ${apiRoot}/${apiEndpoint}/user ADMIN CREATED`, async () => {
         const { status, body: { id } } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}/user`)

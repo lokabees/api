@@ -15,7 +15,7 @@ export const create = async ({ params: { folder }, user, files }, res, next) => 
         // TODO: Make sure its an image
 
         // TODO: clean up
-        if (folder !== 'user') {
+        if (!['user', 'shop'].includes(folder)) {
             res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission') })
             return
         }
