@@ -123,9 +123,8 @@ router.post(
             return true
         }),
         body('parsedOpeningHours').exists().custom(openingHoursValidatorExpress),
-        body('deliveryOptions.localDelivery').optional().isBoolean(),
-        body('deliveryOptions.pickUp').optional().isBoolean(),
-        body('deliveryOptions.mail').optional().isBoolean()
+        body('delivery').optional().isArray(),
+        body('delivery.*').optional().isIn('MD', 'LD', 'PU')
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,
@@ -278,9 +277,8 @@ router.put('/:id',
             return true
         }),
         body('parsedOpeningHours').optional().custom(openingHoursValidatorExpress),
-        body('deliveryOptions.localDelivery').optional().isBoolean(),
-        body('deliveryOptions.pickUp').optional().isBoolean(),
-        body('deliveryOptions.mail').optional().isBoolean()
+        body('delivery').optional().isArray(),
+        body('delivery.*').optional().isIn('MD', 'LD', 'PU')
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,

@@ -25,11 +25,10 @@ const shopSchema = new Schema(
             type: String, 
             unique: true
         },
-        delivery: {
-            localDelivery: { type: Boolean, default: false },
-            pickUp: { type: Boolean, default: false },
-            mail: { type: Boolean, default: false }
-        },
+        delivery: [{
+            type: String,
+            enum: ['LD', 'PU', 'MD'],
+        }],
         contact: new Schema({
             website: {
                 type: String,

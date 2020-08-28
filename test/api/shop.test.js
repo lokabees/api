@@ -315,11 +315,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 },
                 author: defaultUser,
                 published: true,
-                deliveryOptions: {
-                    localDelivery: true,
-                    pickUp: true,
-                    mail: true
-                }
+                delivery: ['MD']
             })
 
         expect(status).toBe(CREATED)
@@ -552,7 +548,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(CREATED)
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST delivery options`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST delivery`, async () => {
         const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -585,13 +581,53 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
                     sunday: []
                 },
-                deliveryOptions: {
-                    localDelivery: 'yes'
-                }
+                delivery: ['LOL']
             })
         
         expect(status).toBe(BAD_REQUEST)
     })
+
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST delivery 1`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postcode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
+                },
+                openingHours: {
+                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                },
+                delivery: 'LOL'
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+
 
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST alldayOpen + more segments`, async () => {
         const { status, body, error } = await request(server)
