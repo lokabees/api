@@ -7,9 +7,7 @@ import userAcl from 'a/user/acl'
 import slugify from 'slugify'
 import { facebookValidator, instagramValidator, emailValidator, websiteValidator, openingHoursValidatorMongoose as openingHoursValidator, minutesToHHMM } from '~/utils/validator'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import { hereConfig } from '~/config'
 import { User } from 'a/user'
-import request from 'request-promise'
 // schema for shop
 const shopSchema = new Schema(
     {
@@ -112,6 +110,12 @@ const shopSchema = new Schema(
             required: true,
             description: 'unpublished shops will not be accessible for the public (only owner+author+admin)'
         },
+        categories: [
+            {
+                type: 'ObjectId',
+                ref: 'ShopCategory'
+            }
+        ],
         parsedOpeningHours: {
             type: Object,
             monday: [{ open: { type: Number }, close: { type: Number } }],
@@ -134,7 +138,6 @@ const shopSchema = new Schema(
         }
     }
 )
-
 
 shopSchema.virtual('isOpen').get(function () {
     if (Object.keys(this.parsedOpeningHours).length === 0) {
@@ -221,7 +224,7 @@ shopSchema.pre('validate', async function(next) {
 
     let slug = slugify(this.name, { lower: true })
     let slugExists = await model.exists({ slug })
-    while (slugExists) {
+    while (slugExists || slug === 'categories') {
         const rnd = Math.round(Math.random() * 1000)
         slug = slugify(this.name + rnd, { lower: true })
         slugExists = await model.exists({ slug })
@@ -237,6 +240,26 @@ shopSchema.plugin(ownership)
 
 const model = mongoose.model('Shop', shopSchema)
 model.swaggerSchema = m2s(model)
-export const schema = model.schema
 
+const shopCategorySchema = new Schema(
+    {
+        name: {
+            type: String,
+            required: true
+        }
+    },
+    {
+        timestamps: true,
+        toJSON: {
+            virtuals: true,
+            transform: (obj, ret) => {
+                delete ret._id
+            }
+        }
+    }
+)
+const categoryModel = mongoose.model('ShopCategory', shopCategorySchema, 'shop_categories')
+
+export const ShopCategory = categoryModel
+export const schema = model.schema
 export default model

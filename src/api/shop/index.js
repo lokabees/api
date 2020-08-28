@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { addAuthor } from 's/request'
-import { create, index, show, update, destroy } from './controller'
+import { create, index, show, update, destroy, getCategories } from './controller'
 import { schema } from './model'
 import { body } from 'express-validator'
 export Shop, { schema } from './model'
@@ -135,7 +135,7 @@ router.post(
 /**
  * @swagger
  * path:
- *  content/api/shops/:
+ *  /api/shops/:
  *    get:
  *      summary: Get shops
  *      tags: [Shops]
@@ -150,6 +150,28 @@ router.post(
  *          description: Oh boi
  */
 router.get('/', query(), index)
+
+
+// TODO: Pagination docs
+/**
+ * @swagger
+ * path:
+ *  /api/shops/categories:
+ *    get:
+ *      summary: Get shop categories
+ *      tags: [Shops]
+ *      security:
+ *        - jwtSessionToken: []
+ *      responses:
+ *        "200":
+ *          description: array with shop categories
+ *        "403":
+ *          description: Missing permissions
+ *        "500":
+ *          description: Oh boi
+ */
+router.get('/categories', getCategories)
+
 /**
  * @swagger
  * path:
