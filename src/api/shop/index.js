@@ -102,6 +102,9 @@ router.post(
                 }
                 return true
         }),
+        // TODO: validation
+        body('categories').optional().isArray(),
+        body('categories.*').optional().isString(),
         body('address.country').exists().isString(),
         body('address.city').exists().isString(),
         body('address.postcode').exists().isString(),
@@ -287,7 +290,19 @@ router.put('/:id',
                 }
                 return true
         }),
-        body('address.locationId').optional().isString().notEmpty(),
+        // TODO: validation
+        body('categories').optional().isArray(),
+        body('categories.*').optional().isString(),
+        body('address.country').optional().isString(),
+        body('address.city').optional().isString(),
+        body('address.postcode').optional().isString(),
+        body('address.street').optional().isString(),
+        body('address.number').optional().isString(),
+        body('address.optional').optional().isString(),
+        body('address.locality').optional().isString(),
+        body('address.geometry.type').optional().isString().equals('Point'),
+        body('address.geometry.coordinates').optional().isArray().isLength(2),
+        body('address.geometry.coordinates.*').isFloat(),
         body('openingHours').optional().custom((value, { req, location, path }) => {
             try {
                 req.body.parsedOpeningHours = parseOpeningHours(value)
