@@ -93,7 +93,7 @@ router.get('/:id', show)
  *          description: ObjectId of the user
  *      responses:
  *        "200":
- *          description: A user schema (fields depend on the ACL)
+ *          description: array with shop ids
  *        "403":
  *          description: Missing permissions
  *        "404":
@@ -121,7 +121,7 @@ router.get('/:id/shops', getShops)
  *          description: ObjectId of the user
  *      responses:
  *        "200":
- *          description: A user schema (fields depend on the ACL)
+ *          description: A shop schema (fields depend on the ACL)
  *        "403":
  *          description: Missing permissions
  *        "404":
@@ -136,7 +136,7 @@ router.get('/:id/shops/active', getActiveShop)
  * path:
  *  /api/users/{userId}/shops/active:
  *    put:
- *      summary: Get active user
+ *      summary: set active shop
  *      tags: [Users]
  *      security:
  *        - jwtSessionToken: []
@@ -149,15 +149,22 @@ router.get('/:id/shops/active', getActiveShop)
  *          description: ObjectId of the user
  *      responses:
  *        "200":
- *          description: A user schema (fields depend on the ACL)
+ *          description: OK
  *        "403":
  *          description: Missing permissions
  *        "404":
- *          description: User not found
+ *          description: User/Shop not found
  *        "500":
  *          description: Oh boi
  */
-router.put('/:id/shops/active', setActiveShop)
+router.put('/:id/shops/active',
+    [
+        body('shop').exists().isString(),
+    ],
+    onlyAllowMatched,
+    expressValidatorErrorChain,
+    setActiveShop
+)
 
 /**
  * @swagger
