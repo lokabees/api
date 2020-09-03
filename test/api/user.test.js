@@ -1,17 +1,20 @@
 import 'dotenv/config'
 import request from 'supertest'
 import server from '~/server'
-import { Router } from 'express'
 import { sign } from 's/auth'
-import { addAuthor } from 's/request'
 import User from 'a/user/model'
+import { Shop } from 'a/shop'
 import { apiRoot, masterKey } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST, CONFLICT } from 'http-status-codes'
+import { parseOpeningHours } from '~/utils/validator'
+import { defaultTo } from 'lodash'
 
 let adminUser,
     adminToken,
     defaultUser,
     defaultToken,
+    user1Token,
+    shop,
     apiEndpoint = 'users'
 
 beforeEach(async () => {
@@ -28,10 +31,101 @@ beforeEach(async () => {
         password: 'SuperPasswort123?!',
         role: 'user'
     })
+    
+    const user1 = await User.create({
+        name: 'Marty',
+        email: 'marty1@getit.social',
+        password: 'SuperPasswort123?!',
+        role: 'user'
+    })
 
+    shop = await Shop.create({
+        name: 'Claudias Kekseladen',
+        contact: {
+            website: 'https://www.kekse.de',
+            facebook: 'https://facebook.com/claudias_kekseladen',
+            instagram: 'https://instagram.com/claudias_kekseladen',
+            phone: '+49 1234 12345',
+            email: 'claudia@kekse.de',   
+        },
+        description: 'Kekse sind toll.',
+        address: {
+            name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+            geometry: {
+              type: 'Point',
+              coordinates: [
+                8.422082,
+                49.019587
+              ]
+            },
+            number: '28',
+            street: 'Klosterweg',
+            postcode: '76131',
+            city: 'Karlsruhe',
+            state: 'Baden-Württemberg',
+            country: 'Deutschland',
+            locality: 'Oststadt Nördlicher Teil'
+        },
+        parsedOpeningHours: parseOpeningHours({
+            monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            sunday: []
+        }),
+        author: defaultUser,
+        published: false
+    })
+
+    const shop1 = await Shop.create({
+        name: 'Claudias Kekseladen',
+        contact: {
+            website: 'https://www.kekse.de',
+            facebook: 'https://facebook.com/claudias_kekseladen',
+            instagram: 'https://instagram.com/claudias_kekseladen',
+            phone: '+49 1234 12345',
+            email: 'claudia@kekse.de',   
+        },
+        description: 'Kekse sind toll.',
+        address: {
+            name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+            geometry: {
+              type: 'Point',
+              coordinates: [
+                8.422082,
+                49.019587
+              ]
+            },
+            number: '28',
+            street: 'Klosterweg',
+            postcode: '76131',
+            city: 'Karlsruhe',
+            state: 'Baden-Württemberg',
+            country: 'Deutschland',
+            locality: 'Oststadt Nördlicher Teil'
+        },
+        parsedOpeningHours: parseOpeningHours({
+            monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+            sunday: []
+        }),
+        author: defaultUser,
+        published: false
+    })
+
+
+    defaultUser.shops.push(shop1._id)
+    await defaultUser.save()
     // Sign in user
     adminToken = (await sign(adminUser)).token
     defaultToken = (await sign(defaultUser)).token
+    user1Token = (await sign(user1)).token
 
 })
 
@@ -135,6 +229,108 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         const keys = Object.keys(body)
         expect(keys).toEqual(expect.arrayContaining(['_id', 'verified', 'role', 'name', 'email']))
+    })
+
+    // GET ACTIVE SHOP
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/active USER OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+
+        expect(status).toBe(OK)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/ USER OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+
+        expect(Array.isArray(body.shops)).toBe(true)
+        expect(status).toBe(OK)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/active GUEST FORBIDDEN`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
+
+        expect(status).toBe(FORBIDDEN)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/ GUEST FORBIDDEN`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/`)
+
+        expect(status).toBe(FORBIDDEN)
+    })
+
+    // GET ACTIVE SHOP
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/active ADMIN OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
+            .set('Authorization', `Bearer ${adminToken}`)
+
+        expect(status).toBe(OK)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/ ADMIN OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/`)
+            .set('Authorization', `Bearer ${adminToken}`)
+
+        expect(Array.isArray(body.shops)).toBe(true)
+        expect(status).toBe(OK)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/active WRONG USER FORBIDDEN`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
+            .set('Authorization', `Bearer ${user1Token}`)
+
+        expect(status).toBe(FORBIDDEN)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/ WRONG USER FORBIDDEN`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/`)
+            .set('Authorization', `Bearer ${user1Token}`)
+
+        expect(status).toBe(FORBIDDEN)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id/shops/active WRONG USER FORBIDDEN`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
+            .set('Authorization', `Bearer ${user1Token}`)
+            .send({ shop: shop._id })
+
+        expect(status).toBe(FORBIDDEN)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id/shops/active ADMIN OK`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ shop: shop._id })
+
+        expect(status).toBe(OK)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id/shops/active USER OK`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({ shop: shop._id })
+
+        expect(status).toBe(OK)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id/shops/active ADMIN NOT_FOUND`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${adminUser._id}/shops/active`)
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ shop: shop._id })
+
+        expect(status).toBe(NOT_FOUND)
     })
 
     // CREATE

@@ -115,7 +115,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         expect(body.rows).toHaveLength(1)
         expect(status).toBe(OK)
-     })
+    })
  
     test(`GET ${apiRoot}/${apiEndpoint} USER OK`, async () => {
         const { status, body } = await request(server)
@@ -167,6 +167,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(OK)
 
     })
+
     // CREATE
     test(`POST ${apiRoot}/${apiEndpoint}/ ADMIN CREATED`, async () => {
         const { status, body, error } = await request(server)

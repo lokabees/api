@@ -13,7 +13,10 @@ import {
     create,
     update,
     updatePassword,
-    destroy
+    destroy,
+    getActiveShop,
+    getShops,
+    setActiveShop
 } from './controller'
 
 /**
@@ -71,6 +74,90 @@ router.get('/', query(), index)
  *          description: Oh boi
  */
 router.get('/:id', show)
+
+/**
+ * @swagger
+ * path:
+ *  /api/users/{userId}/shops:
+ *    get:
+ *      summary: Get user shops
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user
+ *      responses:
+ *        "200":
+ *          description: A user schema (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
+ */
+router.get('/:id/shops', getShops)
+
+/**
+ * @swagger
+ * path:
+ *  /api/users/{userId}/shops/active:
+ *    get:
+ *      summary: Get active user
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user
+ *      responses:
+ *        "200":
+ *          description: A user schema (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
+ */
+router.get('/:id/shops/active', getActiveShop)
+
+/**
+ * @swagger
+ * path:
+ *  /api/users/{userId}/shops/active:
+ *    put:
+ *      summary: Get active user
+ *      tags: [Users]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: path
+ *          name: userId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: ObjectId of the user
+ *      responses:
+ *        "200":
+ *          description: A user schema (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "404":
+ *          description: User not found
+ *        "500":
+ *          description: Oh boi
+ */
+router.put('/:id/shops/active', setActiveShop)
 
 /**
  * @swagger

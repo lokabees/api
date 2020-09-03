@@ -28,6 +28,70 @@ export const show = async ({ user: { _id, role }, method, params: { id } }, res)
     }
 }
 
+export const setActiveShop = async ({ user: { _id, role }, body: { shop }, params: { id } }, res) => {
+    try {
+        
+        if (_id !== id && role !== 'admin') {
+            res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission')})
+            return
+        }
+
+        const user = await User.findById(id === 'me' ? _id : id)
+        const { shops = [] } = user
+        if (!user || !shops.includes(shop) && role !== 'admin ') {
+            res.status(NOT_FOUND).json({ valid: false, message: res.__('not-found')})
+            return
+        }
+
+        user.set('activeShop', shop)
+        await user.save()
+
+        res.status(OK).end()
+    } catch (error) {
+        errorHandler(res, error)
+    }
+}
+
+export const getActiveShop = async ({ user: { _id, role }, method, params: { id } }, res) => {
+    try {
+        
+        if (_id !== id && role !== 'admin') {
+            res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission')})
+            return
+        }
+
+        const user = await User.findById(id === 'me' ? _id : id).populate('activeShop')
+        if (!user || !user.activeShop) {
+            res.status(NOT_FOUND).json({ valid: false, message: res.__('not-found')})
+            return
+        }
+
+        res.status(OK).json(user.activeShop.filter({ role, method }))
+    } catch (error) {
+        errorHandler(res, error)
+    }
+}
+
+export const getShops = async ({ user: { _id, role }, method, params: { id } }, res) => {
+    try {
+        
+        if (_id !== id && role !== 'admin') {
+            res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission')})
+            return
+        }
+
+        const user = await User.findById(id === 'me' ? _id : id)
+        if (!user) {
+            res.status(NOT_FOUND).json({ valid: false, message: res.__('not-found')})
+            return
+        }
+
+        res.status(OK).json({ shops: user.shops })
+    } catch (error) {
+        errorHandler(res, error)
+    }
+}
+
 export const create = async ({ body , method, user }, res, next) => {
     try {
 
