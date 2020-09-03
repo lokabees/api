@@ -78,19 +78,7 @@ router.post(
             }
             return true
         }),
-        body('images.title')
-            .optional()
-            .custom((value, { req, location, path }) => {
-                if (value.url === undefined || value.id === undefined) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                const match = value.url.match(cloudinaryValidator)
-                if (match === null || value.id !== match[4]) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                return true
-        }),
-        body('images.profile')
+        body('images.*')
             .optional()
             .custom((value, { req, location, path }) => {
                 if (value.url === undefined || value.id === undefined) {
@@ -264,7 +252,7 @@ router.put('/:id',
             }
             return true
         }),
-        body('images.title')
+        body('images.*')
             .optional()
             .custom((value, { req, location, path }) => {
                 console.log(value)
@@ -274,18 +262,6 @@ router.put('/:id',
                 const match = req.body.title.url.match(cloudinaryValidator)
                 console.log(match)
                 if (match === null || req.body.title.id !== match[4]) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                return true
-        }),
-        body('images.profile')
-            .optional()
-            .custom((value, { req, location, path }) => {
-                if (value.url === undefined || value.id === undefined) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                const match = value.url.match(cloudinaryValidator)
-                if (match === null || value.id !== match[4]) {
                     throw new Error(req.__(`${path}.validation`))
                 }
                 return true

@@ -296,7 +296,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
-                    title: {
+                    cover: {
                         url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
                         id: 'shop/abcd'
                     },
@@ -323,7 +323,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         // slug got generated
         expect(body.slug).not.toBeUndefined()
-
+        console.log(body.images)
         // openinghours virtual works
         expect(body.openingHours).not.toBeUndefined()
         expect(body.isOpen).not.toBeUndefined()
@@ -820,7 +820,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(BAD_REQUEST)
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid title image`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid cover image`, async () => {
         const { status } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -845,7 +845,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
-                    title: {
+                    cover: {
                         url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
                         id: 'shop/123'
                     }
@@ -855,7 +855,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(BAD_REQUEST)
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid title image`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid cover image`, async () => {
         const { status } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -880,7 +880,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 images: {
-                    title: {
+                    cover: {
                         url: 'what',
                         id: 'shop/123'
                     }
