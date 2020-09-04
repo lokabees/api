@@ -1,5 +1,4 @@
 import { intersection } from 'lodash'
-
 // lmao dont @ me
 export const passwordValidator = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#?$%^&*])(?=.{8,})/
 // eslint-disable-next-line max-len
@@ -14,8 +13,6 @@ export const websiteValidator = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\
 export const cloudinaryValidator = /^.+\.cloudinary\.com\/(?:[^\/]+\/)(?:(image|video)\/)?(?:(upload|fetch)\/)?(?:(?:[^_/]+_[^,/]+,?)*\/)?(?:v(\d+|\w{1,2})\/)?([^\.^\s]+)(?:\.(.+))?$/
 
 export const isObjectId = value => /^[0-9a-fA-F]{24}$/.test(value)
-
-
 
 /*
 Rules: 

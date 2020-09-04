@@ -258,8 +258,7 @@ const shopCategorySchema = new Schema(
         }
     }
 )
-const categoryModel = mongoose.model('ShopCategory', shopCategorySchema, 'shop_categories')
 
-export const ShopCategory = categoryModel
+export const category = mongoose.model('ShopCategory', shopCategorySchema, 'shop_categories')
 export const schema = model.schema
 export default model

@@ -1,11 +1,10 @@
 import 'dotenv/config'
 import request from 'supertest'
 import server from '~/server'
-import { Router } from 'express'
-import User from 'a/user/model'
+import { User } from 'a/user'
 import { sign } from 's/auth'
 import { apiRoot } from '~/config'
-import Verification from 'a/verification/model'
+import { Verification } from 'a/verification'
 import { FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 
 let defaultUser,

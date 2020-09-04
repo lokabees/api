@@ -2,7 +2,7 @@ import 'dotenv/config'
 import request from 'supertest'
 import server from '~/server'
 import { sign } from 's/auth'
-import User from 'a/user/model'
+import { User } from 'a/user'
 import { apiRoot } from '~/config'
 import { OK } from 'http-status-codes'
 

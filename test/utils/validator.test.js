@@ -1,13 +1,5 @@
 import { passwordValidator, emailValidator, instagramValidator, facebookValidator, websiteValidator } from '~/utils/validator'
 
-/*
-
-http://255.255.255.255
-255.255.255.255
-http://invalid.com/perl.cgi?key= | http://web-site.com/cgi-bin/perl.cgi?key1=value1&key2
-http://www.site.com:8008
-*/
-
 describe('website validation', () => {
     test('valid website with https+www', () => {
         const valid = websiteValidator.test('https://www.example.com')

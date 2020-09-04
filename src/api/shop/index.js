@@ -2,14 +2,26 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { addAuthor } from 's/request'
 import { create, index, show, update, destroy, getCategories } from './controller'
-import { schema } from './model'
 import { body } from 'express-validator'
 export Shop, { schema } from './model'
+// meh
+import { category } from "./model";
+export const ShopCategory = category
 import { facebookValidator, instagramValidator, websiteValidator, cloudinaryValidator, parseOpeningHours, openingHoursValidatorExpress } from '~/utils/validator'
 import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
-// TODO: Refactor the validation maybe
+// workaround to fix import / export issues >:(
+const categoryValidator = async (categories, { req, location, path }) => {
+    try {
+        const dbCategories = (await ShopCategory.find()).map(a => a._id.toString())
+        if (categories.every((category) => dbCategories.includes(category))) return true
+        throw new Error(req.__(`${path}.validation`))
+    } catch (error) {
+        throw new Error(req.__(`${path}.validation`))
+    }
+}
+
 
 /**
  * @swagger
@@ -91,8 +103,7 @@ router.post(
                 return true
         }),
         // TODO: validation
-        body('categories').optional().isArray(),
-        body('categories.*').optional().isString(),
+        body('categories').optional().isArray().custom(categoryValidator),
         body('address.country').exists().isString(),
         body('address.city').exists().isString(),
         body('address.postcode').exists().isString(),
@@ -255,20 +266,17 @@ router.put('/:id',
         body('images.*')
             .optional()
             .custom((value, { req, location, path }) => {
-                console.log(value)
-                if (req.body.title.url === undefined || req.body.title.id === undefined) {
+                if (value.url === undefined || value.id === undefined) {
                     throw new Error(req.__(`${path}.validation`))
                 }
-                const match = req.body.title.url.match(cloudinaryValidator)
-                console.log(match)
-                if (match === null || req.body.title.id !== match[4]) {
+                const match = value.url.match(cloudinaryValidator)
+                if (match === null || value.id !== match[4]) {
                     throw new Error(req.__(`${path}.validation`))
                 }
                 return true
         }),
-        // TODO: validation
-        body('categories').optional().isArray(),
-        body('categories.*').optional().isString(),
+        // TODO: validation.
+        body('categories').optional().isArray().custom(categoryValidator),
         body('address.country').optional().isString(),
         body('address.city').optional().isString(),
         body('address.postcode').optional().isString(),

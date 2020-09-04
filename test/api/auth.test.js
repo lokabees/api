@@ -3,7 +3,7 @@ import server from '~/server'
 import { jwtConfig, masterKey, apiRoot } from '~/config'
 import { verify } from 's/auth'
 import { sign, decode } from 's/auth'
-import User from 'a/user/model'
+import { User } from 'a/user'
 import Session from 'a/session'
 
 import { OK, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'

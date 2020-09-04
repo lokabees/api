@@ -2,14 +2,16 @@ import 'dotenv/config'
 import request from 'supertest'
 import server from '~/server'
 import { sign } from 's/auth'
-import User from 'a/user/model'
-import { Shop } from 'a/shop'
+import { User } from 'a/user'
+import { Shop, ShopCategory } from 'a/shop'
 import { apiRoot } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { parseOpeningHours } from '~/utils/validator'
+
 let adminUser,
     adminToken,
     shop,
+    category,
     defaultUser,
     defaultToken,
     adminShop,
@@ -101,6 +103,8 @@ beforeEach(async () => {
         author: adminUser,
         published: true
     })
+
+    category = await ShopCategory.create({ name: 'category1' })
 
     defaultToken = (await sign(defaultUser)).token
     adminToken = (await sign(adminUser)).token
@@ -265,7 +269,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     })
     
     test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED`, async () => {
-        const { status, body } = await request(server)
+        const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({
@@ -314,20 +318,17 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
                     sunday: []
                 },
+                categories: [category._id],
                 author: defaultUser,
                 published: true,
                 delivery: ['MD', 'LD']
             })
-
         expect(status).toBe(CREATED)
-
         // slug got generated
         expect(body.slug).not.toBeUndefined()
-        console.log(body.images)
         // openinghours virtual works
         expect(body.openingHours).not.toBeUndefined()
         expect(body.isOpen).not.toBeUndefined()
-
     })
     
     // UPDATE
@@ -416,6 +417,46 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 })
 
   describe(`TEST ${apiRoot}/${apiEndpoint} VALIDATION`,  () => {
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST WRONG CATEGORY`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postcode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
+                },
+                openingHours: {
+                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
+                    sunday: []
+                },
+                categories: ['123', null, 7]
+            })
+    
+        expect(status).toBe(BAD_REQUEST)
+    })
+
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing name`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)

@@ -21,5 +21,6 @@
 	"parsedOpeningHours.validation": "parsedOpeningHours.validation",
 	"password.validation": "Password does not match requirements",
 	"email.validation": "E-Mail is in the wrong format",
-	"images.title.validation": "images.title.validation"
+	"images.title.validation": "images.title.validation",
+	"categories.validation": "categories.validation"
 }
