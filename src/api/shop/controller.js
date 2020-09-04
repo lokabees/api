@@ -2,7 +2,7 @@ import { Shop } from '.'
 import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
 import { errorHandler } from 's/response'
 import { isObjectId } from '~/utils/validator'
-import { ShopCategory } from './model'
+import { category as ShopCategory } from './model'
 
 // Get all
 export const index = async ({ querymen, user, method }, res, next) => {
