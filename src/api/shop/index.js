@@ -266,7 +266,9 @@ router.put('/:id',
         body('images.*')
             .optional()
             .custom((value, { req, location, path }) => {
-                if (value.url === undefined || value.id === undefined) {
+                if (value.url === null && value.id === null) {
+                    return true
+                } else if (value.url === undefined || value.id === undefined) {
                     throw new Error(req.__(`${path}.validation`))
                 }
                 const match = value.url.match(cloudinaryValidator)

@@ -69,6 +69,16 @@ beforeEach(async () => {
             saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
             sunday: []
         }),
+        images: {
+            cover: {
+                url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
+                id: 'shop/abcd'
+            },
+            profile: {
+                url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/abcd.jpg',
+                id: 'shop/abcd'
+            }
+        },
         author: defaultUser,
         published: false
     })
@@ -363,6 +373,40 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             .set('Authorization', `Bearer ${adminToken}`)
             .send({ name: 'mhmhmh' })
 
+        expect(status).toBe(OK)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id ADMIN OK CHANGE ONE IMAGE`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${shop._id}`)
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                images: {
+                    cover: {
+                        url: 'https://res.cloudinary.com/test/image/upload/v1589192972/shop/aaaaaaa.jpg',
+                        id: 'shop/aaaaaaa'
+                    }
+                }
+            })
+        expect(body.images.profile).not.toBeUndefined()
+        expect(body.images.cover.id).toBe('shop/aaaaaaa')
+        expect(status).toBe(OK)
+    })
+
+    test(`PUT ${apiRoot}/${apiEndpoint}/:id ADMIN OK DELETE IMAGE`, async () => {
+        const { status, body } = await request(server)
+            .put(`${apiRoot}/${apiEndpoint}/${shop._id}`)
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ // deletes cover
+                images: {
+                    cover: {
+                        url: null,
+                        id: null
+                    }
+                }
+            })
+        expect(body.images.cover.url).toBeNull()
+        expect(body.images.cover.id).toBeNull()
         expect(status).toBe(OK)
     })
 
