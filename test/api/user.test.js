@@ -237,7 +237,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             .get(`${apiRoot}/${apiEndpoint}/${defaultUser._id}/shops/active`)
             .set('Authorization', `Bearer ${defaultToken}`)
 
-        expect(status).toBe(OK)
+            expect(status).toBe(OK)
     })
 
     test(`GET ${apiRoot}/${apiEndpoint}/:id/shops/ USER OK`, async () => {
