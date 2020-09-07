@@ -17,9 +17,6 @@ const config = {
         apiRoot: process.env.API_ROOT || '/api',
         masterKey: requireProcessEnv('MASTER_KEY'),
         maxSessionCount: 10,
-        hereConfig: {
-            apiKey: requireProcessEnv('HERE_API')
-        },
         jwtConfig: {
             secret: requireProcessEnv('JWT_SECRET'),
             credentialsRequired: false,
