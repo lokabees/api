@@ -9,7 +9,6 @@ Services are expandable modules that can be added or removed. Dependencies betwe
     |-- mongoose
     |-- request
     |-- response
-    |-- sendgrid
 ```
 
 If the module also offers the possibility to extend it, you can create subfolders like plugins. For example with mongoose

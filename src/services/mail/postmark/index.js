@@ -1,14 +1,18 @@
 import { Client } from 'postmark'
 import { postmark } from '~/config'
+import { env } from '~/config'
 
 const client = new Client(postmark.apiKey)
 
 export const sendPasswordReset = (To, name, token) => {
-    // TODO
+    // TODO: need to get the right template first
+    return true
 }
 
 
 export const sendVerification = async (To, name, token) => {
+    // TODO: need to get the right template first
+    return true 
     const { ErrorCode, Message } = await client.sendEmailWithTemplate({
         From: postmark.defaultEmail,
         To,

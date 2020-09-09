@@ -2,6 +2,7 @@ import { User } from '.'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-status-codes'
 import { Verification } from 'a/verification'
 import { errorHandler } from 's/response'
+import { sendVerification } from 's/mail'
 
 export const index = async ({ querymen, user, method }, res, next) => {
     try {

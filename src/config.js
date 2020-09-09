@@ -21,7 +21,8 @@ const config = {
             secret: requireProcessEnv('JWT_SECRET'),
             credentialsRequired: false,
             getToken: req => extractToken(req),
-            expiresIn: '8d'
+            expiresIn: '8d',
+            algorithms: ['HS256']
         },
         fileUploadConfig: {
             limits: {
@@ -36,14 +37,6 @@ const config = {
         rateLimiter: {
             windowMs: 15 * 60 * 1000, // 15 minutes
             max: 100 // limit each IP to 100 requests per windowMs
-        },
-        sendgrid: {
-            apiKey: requireProcessEnv('SENDGRID_KEY'),
-            emailTemplates: {
-                welcome: 'd-e348a8a8a2f04a2e871e6fc6c26a5cfb',
-                forgot: 'd-ac2e091839ab4112b1be2ff7d9d2d6d3'
-            },
-            defaultEmail: 'no-reply@lokabees.com'
         },
         postmark: {
             apiKey: requireProcessEnv('POSTMARK_KEY'),
