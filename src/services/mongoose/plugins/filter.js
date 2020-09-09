@@ -9,7 +9,7 @@
  * @param {*} schema, the mongoose schema
  * @param {*} { rules }, ACL rules
  */
-export default function select(schema, { rules }) {
+export default function filter(schema, { rules }) {
     schema.methods.filter = function({ role = 'guest', method }) {
 
         const { permissions } = rules.find(p => p.group === role) ?? []
