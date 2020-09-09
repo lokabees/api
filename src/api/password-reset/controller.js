@@ -3,7 +3,7 @@ import { OK, NO_CONTENT, FORBIDDEN, BAD_REQUEST } from 'http-status-codes'
 import { User } from 'a/user'
 import { Session } from 'a/session'
 import { errorHandler } from 's/response'
-import { sendPasswordResetMail } from 's/sendgrid'
+import { sendPasswordReset } from 's/mail'
 
 export const show = async ({ params: { token } }, res, next) => {
     try {
@@ -35,7 +35,7 @@ export const create = async ({ body: { email } }, res, next) => {
 
         const reset = await PasswordReset.create({ user: user._id })
         const { token } = reset
-        await sendPasswordResetMail({ to: email, name: user.name, token })
+        await sendPasswordReset({ to: email, name: user.name, token })
 
         res.status(NO_CONTENT).end()
 
