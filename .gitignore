@@ -26,6 +26,9 @@ lib-cov
 # Bower dependency directory (https://bower.io/)
 bower_components
 
+# istanbul
+coverage
+
 # node-waf configuration
 .lock-wscript
 
