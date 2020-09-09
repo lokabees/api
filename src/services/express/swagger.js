@@ -1,22 +1,22 @@
 import { Router } from 'express'
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import { swagger } from '~/config'
+import { swagger as swaggerConfig } from '~/config'
 import { Models } from '~/api'
 
-const specs = swaggerJSDoc(swagger)
-const router = new Router()
+const specs = swaggerJSDoc(swaggerConfig)
+const swagger = new Router()
 
 specs.components.schemas = {}
 Models.forEach((model) => {
     specs.components.schemas[model.swaggerSchema.title] = model.swaggerSchema
 })
 
-router.use(swagger.url, swaggerUi.serve)
-router.get(
-    swagger.url,
+swagger.use(swaggerConfig.url, swaggerUi.serve)
+swagger.get(
+    swaggerConfig.url,
     swaggerUi.setup(specs, {
         explorer: true
     })
 )
-export default router
+export default swagger
