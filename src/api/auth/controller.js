@@ -1,7 +1,7 @@
 import { User } from 'a/user'
 import { Session } from 'a/session'
-import { sign, decodeJWT, destroy, comparePassword, providerAuth } from 's/auth'
-import { OK, NOT_FOUND, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
+import { sign, destroy, comparePassword, providerAuth } from 's/auth'
+import { OK, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { extractToken } from 's/auth/utils'
 import { errorHandler } from 's/response'
 

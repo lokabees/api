@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { schema } from './model'
 export Verification, { schema } from './model'
 
 import {

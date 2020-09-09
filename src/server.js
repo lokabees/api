@@ -1,4 +1,4 @@
-import { env, port, ip, apiRoot, swagger } from '~/config'
+import { port, ip, apiRoot, swagger } from '~/config'
 import 's/mongoose'
 import express from 's/express'
 import api from 'a/'

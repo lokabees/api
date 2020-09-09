@@ -1,5 +1,5 @@
 import { PasswordReset } from '.'
-import { OK, NO_CONTENT, NOT_FOUND, FORBIDDEN, BAD_REQUEST } from 'http-status-codes'
+import { OK, NO_CONTENT, FORBIDDEN, BAD_REQUEST } from 'http-status-codes'
 import { User } from 'a/user'
 import { Session } from 'a/session'
 import { errorHandler } from 's/response'

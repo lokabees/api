@@ -1,5 +1,5 @@
 import { User } from '.'
-import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT, INTERNAL_SERVER_ERROR } from 'http-status-codes'
+import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-status-codes'
 import { sendVerificationMail } from 's/sendgrid'
 import { Verification } from 'a/verification'
 import { errorHandler } from 's/response'
