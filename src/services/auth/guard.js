@@ -8,11 +8,11 @@ import { jwtConfig, masterKey, maxSessionCount } from '~/config'
 // Get JWT Secret
 const { secret } = jwtConfig
 
-export const verify = async (token, secret) => jwt.verify(token, secret)
+export const verify = async token => jwt.verify(token, secret)
 
 const isRevokedCallback = async (req, res, done) => {
     try {
-        const { jti } = await verify(extractToken(req), secret)
+        const { jti } = await verify(extractToken(req))
         return done(null, !await Session.exists({ jti }))
     } catch (error) {
         return done(null, true)
