@@ -3,7 +3,7 @@ import { postmark } from '~/config'
 
 const client = new Client(postmark.apiKey)
 
-const verificationLink = token => `${process.env.APP_URL}/verification/${token}`
+const verificationLink = token => `${process.env.API_URL}/api/verification/${token}`
 const passwordLink = token => `${process.env.APP_URL}/password-reset/${token}`
 const loginLink = `${process.env.APP_URL}/login`
 
