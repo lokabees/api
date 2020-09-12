@@ -104,7 +104,7 @@ export const create = async ({ body , method, user }, res, next) => {
 
         const { token } = await Verification.create({ user: doc._id })
 
-        await sendVerification({ to: body.email, name: body.name, token })
+        await sendVerification(body.email, body.name, token)
 
         res.status(CREATED).json(doc.filter({ role: user?.role, method }))
     } catch (error) {
