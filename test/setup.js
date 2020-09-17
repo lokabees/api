@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events'
 import MongodbMemoryServer from 'mongodb-memory-server'
 import mongoose from 's/mongoose'
-import { mongo } from '~/config'
 
 EventEmitter.defaultMaxListeners = Infinity
 
@@ -26,8 +25,8 @@ let mongoServer
 beforeAll(async () => {
     jest.setTimeout(45000)
     mongoServer = new MongodbMemoryServer()
-    await mongoServer.getConnectionString()
-    await mongoose.connect(mongo.uri, {
+    const memURI = await mongoServer.getConnectionString()
+    await mongoose.connect(memURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true
