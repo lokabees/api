@@ -35,7 +35,9 @@ export const create = async ({ body: { email } }, res, next) => {
 
         const reset = await PasswordReset.create({ user: user._id })
         const { token } = reset
-        await sendPasswordReset({ to: email, name: user.name, token })
+        const os = 'Linux'
+        const browser = 'Firefox'
+        await sendPasswordReset(email, user.name, token, os, browser)
 
         res.status(NO_CONTENT).end()
 

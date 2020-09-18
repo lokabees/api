@@ -5,7 +5,7 @@ import { User } from 'a/user'
 import { sign } from 's/auth'
 import { apiRoot } from '~/config'
 import { Verification } from 'a/verification'
-import { FORBIDDEN, NO_CONTENT } from 'http-status-codes'
+import { FORBIDDEN, MOVED_TEMPORARILY } from 'http-status-codes'
 
 let defaultUser,
     defaultToken,
@@ -52,11 +52,11 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(FORBIDDEN)
     })
 
-    test(`GET ${apiRoot}/${apiEndpoint} GUEST NO_CONTENT`, async () => {
+    test(`GET ${apiRoot}/${apiEndpoint} GUEST MOVED_TEMPORARILY`, async () => {
         const { status } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}/${token}`)
 
-        expect(status).toBe(NO_CONTENT)
+        expect(status).toBe(MOVED_TEMPORARILY)
     })
 
     test(`GET ${apiRoot}/${apiEndpoint} ADMIN FORBIDDEN`, async () => {
@@ -71,12 +71,12 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
 describe(`TEST ${apiRoot}/${apiEndpoint}`,  () => {
 
-    test(`GET ${apiRoot}/${apiEndpoint} GUEST NO_CONTENT`, async () => {
+    test(`GET ${apiRoot}/${apiEndpoint} GUEST MOVED_TEMPORARILY`, async () => {
 
         const { status } = await request(server)
             .get(`${apiRoot}/${apiEndpoint}/${token}`)
 
-        expect(status).toBe(NO_CONTENT)
+        expect(status).toBe(MOVED_TEMPORARILY)
 
         const { verified } = await User.findById(defaultUser._id)
         expect(verified).toBe(true)
