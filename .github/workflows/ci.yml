@@ -25,7 +25,7 @@ jobs:
     - name: populate .env-file
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: echo ${{ secrets.ENV_FILE }}>.env
+      run: echo ${{ secrets.ENV_FILE }}>.env ; ls -l .env ; cat .env ; cat .env|wc -l 
     - name: Install packages
       run: yarn install
     - name: run Tests
