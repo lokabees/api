@@ -36,4 +36,6 @@ jobs:
     - name: Run Sonar analysis
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: pwd; ls -l; ls -l test; sonar-scanner -Dsonar.login=${{ secrets.SONAR_API_KEY }} -X
+      run: ls -l
+      run: pwd
+      run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_API_KEY }}
