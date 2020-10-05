@@ -1,8 +1,10 @@
 import { Shop } from '.'
-import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT } from 'http-status-codes'
+import { OK, NOT_FOUND, CREATED, FORBIDDEN, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { errorHandler } from 's/response'
 import { isObjectId } from '~/utils/validator'
 import { category as ShopCategory } from './model'
+import circleToPolygon from 'circle-to-polygon'
+import { decode } from 'ngeohash'
 
 // Get all
 export const index = async ({ querymen, user, method }, res, next) => {
@@ -10,6 +12,42 @@ export const index = async ({ querymen, user, method }, res, next) => {
 
         if (user?.role !== 'admin') { // If user is not admin we only want to show the published shops
             querymen.query.published = true
+        }
+
+        const shops = await Shop.paginate(querymen, {
+            populate: [{ path: 'author' }],
+            method,
+            user
+        })
+
+        res.status(OK).json(shops)
+    } catch (error) {
+        errorHandler(res, error)
+    }
+}
+
+export const getNear = async ({ querymen, user, method, params }, res, next) => {
+    try {
+        const { geohash } = params
+        if (!geohash) {
+            res.status(BAD_REQUEST).end()
+            return
+        }
+        const { latitude, longitude } = decode(geohash)
+
+        if (!latitude || !longitude) {
+            res.status(BAD_REQUEST).end()
+            return
+        }
+
+        if (user?.role !== 'admin') { // If user is not admin we only want to show the published shops
+            querymen.query.published = true
+        }
+
+        querymen.query.address.geometry = {
+            $geoIntersects: {
+                $geometry: circleToPolygon([longitude, latitude], 20000, 32),
+            }
         }
 
         const shops = await Shop.paginate(querymen, {
