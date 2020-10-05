@@ -14,20 +14,6 @@ export const cloudinaryValidator = /^.+\.cloudinary\.com\/(?:[^\/]+\/)(?:(image|
 
 export const isObjectId = value => /^[0-9a-fA-F]{24}$/.test(value)
 
-/*
-Rules: 
-    0. Only 10 time segments per day (everything else is kinda fishy)
-  0,5. Each segment value between 0 and 1440
-    1. Don't allow other time segments if it is supposed to be open all day (open = close = 0)
-    2. No time segment should have oepn >= close
-  2.5. No weird intersections
-    3. Only 365 exceptions
-    
-*/
-
-
-// This part is mostly copied from the old getit codebase:
-
 const validSegmentRange = segment => (segment.open >= 0 && segment.open <= 1440) && (segment.close >= 0 && segment.close <= 1440)
 
 export const HHMMtoMinutes = (hhmm) => {
@@ -40,38 +26,6 @@ export const minutesToHHMM = (minutes) => {
     const m = minutes % 60    
     const h = (minutes-m) / 60
     return `${h<10?'0':''}${h}:${m<10?'0':''}${m}`
-}
-
-const validateOpeningHours = (openingHours) => {
-    const days = Object.keys(openingHours)
-
-    for (const day of days) {
-        const segments = openingHours[day]
-
-        // Rule 0
-        if (segments.length > 2) {
-            return false
-        }
-
-        // Rule 0,5
-        const invalidValue = -1 !== segments.findIndex(segment => !validSegmentRange(segment))
-        if (invalidValue) {
-            return false
-        }
-
-        // Rule 1
-        const allDayOpen = -1 !== segments.findIndex(segment => segment.open === 0 && segment.close === 0)
-        if (allDayOpen && segments.length > 1) {
-            return false
-        }
-
-        // Rule 2
-        const badSegments = segments.filter(segment => segment.open >= segment.close)
-        if (!allDayOpen && badSegments.length > 0) {
-            return false
-        }
-    }    
-    return true
 }
 
 export const openingHoursValidatorMongoose = {
@@ -95,21 +49,53 @@ export const openingHoursValidatorExpress = (openingHours, { req, location, path
     }
 }
 
+const validateOpeningHours = (openingHours) => {
+    const days = Object.keys(openingHours)
+
+    for (const day of days) {
+        const breaks = openingHours[day].breaks
+        const open = openingHours[day].open
+        const close = openingHours[day].close
+
+        if (!validSegmentRange({ open, close }) || close <= open) {
+            return false
+        }
+
+        const invalidValue = -1 !== breaks.findIndex(br => !validSegmentRange({ open: br.from, close: br.to }))
+        if (invalidValue) {
+            return false
+        }
+
+        if (breaks.length > 2) {
+            return false
+        }
+
+        const badBreaks = breaks.filter(br => br.from >= br.to)
+        if (badBreaks.length > 0) {
+            return false
+        }
+    }    
+    return true
+}
+
 export const parseOpeningHours = (openingHours) => {
     if (openingHours === undefined) return
-    
-    const parsed = { monday: [], tuesday: [], wednesday: [], thursday: [], friday: [], saturday: [], sunday: [] }
 
+    const parsed = { }
     const days = intersection(Object.keys(openingHours), ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
- 
-    for (const day of days) {
-        parsed[day] = []
-        const segments = openingHours[day]
-        for (let index = 0; index < segments.length; index += 1) {
-            const segment = segments[index]
-            parsed[day].push({ open: HHMMtoMinutes(segment.open), close: HHMMtoMinutes(segment.close)})
-        } 
 
+    for (const day of days) {
+        parsed[day] = {
+            open: HHMMtoMinutes(openingHours[day].open),
+            close: HHMMtoMinutes(openingHours[day].close),
+            breaks: []
+        }
+        openingHours[day]?.breaks.forEach((br) => {
+            parsed[day].breaks.push({
+                from: HHMMtoMinutes(br.from),
+                to: HHMMtoMinutes(br.to)
+            })
+        })
     }
     return parsed
 }

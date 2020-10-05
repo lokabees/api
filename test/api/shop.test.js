@@ -61,13 +61,13 @@ beforeEach(async () => {
             locality: 'Oststadt Nördlicher Teil'
         },
         parsedOpeningHours: parseOpeningHours({
-            monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            sunday: []
+            monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
         }),
         images: {
             cover: {
@@ -217,13 +217,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 slug: 'hehehe u got hacked',
                 author: defaultUser,
                 openingHours: {
-                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 },
                 published: true
             })
@@ -320,13 +320,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     }
                 },
                 openingHours: {
-                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 },
                 categories: [category._id],
                 author: defaultUser,
@@ -337,6 +337,10 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         // slug got generated
         expect(body.slug).not.toBeUndefined()
         // openinghours virtual works
+        expect(body.openingHours.monday.open).toBe('08:00')
+        expect(body.openingHours.monday.close).toBe('18:00')
+        expect(body.openingHours.monday.breaks[0].from).toBe('12:00')
+        expect(body.openingHours.monday.breaks[0].to).toBe('13:00')
         expect(body.openingHours).not.toBeUndefined()
         expect(body.isOpen).not.toBeUndefined()
     })
@@ -488,13 +492,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 },
                 categories: ['123', null, 7]
             })
@@ -622,13 +626,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 }
             })
 
@@ -660,13 +664,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 },
                 delivery: ['LOL']
             })
@@ -700,13 +704,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 },
                 delivery: 'LOL'
             })
@@ -716,7 +720,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
 
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST alldayOpen + more segments`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST ore segments`, async () => {
         const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -741,13 +745,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '00:00', close: '00:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }, { from: '14:00', to: '15:00' }, { from: '16:00', to: '17:00' }] },
                 }
             })
         
@@ -779,20 +783,20 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '13:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '7:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 }
             })
         
         expect(status).toBe(BAD_REQUEST)
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST 2 breaks`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST 3 breaks`, async () => {
         const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
@@ -817,51 +821,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }, { open: '19:00', close: '20:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
-                }
-            })
-        
-        expect(status).toBe(BAD_REQUEST)
-    })
-
-    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid values`, async () => {
-        const { status, body, error } = await request(server)
-            .post(`${apiRoot}/${apiEndpoint}`)
-            .set('Authorization', `Bearer ${defaultToken}`)
-            .send({
-                name: 'Kekse!',
-                description: 'hi',
-                address: {
-                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
-                    geometry: {
-                      type: 'Point',
-                      coordinates: [
-                        8.422082,
-                        49.019587
-                      ]
-                    },
-                    number: '28',
-                    street: 'Klosterweg',
-                    postcode: '76131',
-                    city: 'Karlsruhe',
-                    state: 'Baden-Württemberg',
-                    country: 'Deutschland',
-                    locality: 'Oststadt Nördlicher Teil'
-                },
-                openingHours: {
-                    monday: [{ open: '13:00', close: '12:00' }, { open: 'lel?', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }, { from: '14:00', to: '15:00' }, { from: '16:00', to: '17:00' }] },
                 }
             })
         
@@ -893,13 +859,51 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                     locality: 'Oststadt Nördlicher Teil'
                 },
                 openingHours: {
-                    monday: [{ open: '13:00', close: '12:00' }, { open: '17:61', close: '18:00' }],
-                    tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-                    sunday: []
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: 8, to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                }
+            })
+        
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST invalid values`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postcode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
+                },
+                openingHours: {
+                    monday: { open: '8:00', close: 'lol', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
                 }
             })
         

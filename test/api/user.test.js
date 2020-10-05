@@ -67,13 +67,13 @@ beforeEach(async () => {
             locality: 'Oststadt Nördlicher Teil'
         },
         parsedOpeningHours: parseOpeningHours({
-            monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            sunday: []
+            monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
         }),
         author: defaultUser,
         published: false
@@ -107,13 +107,13 @@ beforeEach(async () => {
             locality: 'Oststadt Nördlicher Teil'
         },
         parsedOpeningHours: parseOpeningHours({
-            monday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            tuesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            wednesday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            thursday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            friday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            saturday: [{ open: '9:00', close: '12:00' }, { open: '13:00', close: '18:00' }],
-            sunday: []
+            monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
         }),
         author: defaultUser,
         published: false
