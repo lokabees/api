@@ -390,6 +390,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             })
         expect(body.images.profile).not.toBeUndefined()
         expect(body.images.cover.id).toBe('shop/aaaaaaa')
+        expect(body.images.cover.url).toBe('https://res.cloudinary.com/test/image/upload/v1589192972/shop/aaaaaaa.jpg')
         expect(status).toBe(OK)
     })
 
