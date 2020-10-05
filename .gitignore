@@ -28,6 +28,7 @@ bower_components
 
 # istanbul
 coverage
+test-report.xml
 
 # node-waf configuration
 .lock-wscript
