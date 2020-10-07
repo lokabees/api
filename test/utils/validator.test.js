@@ -1,4 +1,4 @@
-import { passwordValidator, emailValidator, instagramValidator, facebookValidator, websiteValidator, parseOpeningHours } from '~/utils/validator'
+import { passwordValidator, emailValidator, instagramValidator, facebookValidator, websiteValidator, parseOpeningHours, validateOpeningHours } from '~/utils/validator'
 
 describe('website validation', () => {
     test('valid website with https+www', () => {
@@ -278,6 +278,8 @@ describe('openinghours parsing', () => {
             
         })
 
+        expect(validateOpeningHours(parsed)).toBe(true)
+
     })
 
     test('default no breaks', () => {
@@ -304,6 +306,8 @@ describe('openinghours parsing', () => {
             expect(parsed[day].close).toBe(1080)
         })
 
+        expect(validateOpeningHours(parsed)).toBe(true)
+
     })
 
     test('default empty days', () => {
@@ -327,6 +331,8 @@ describe('openinghours parsing', () => {
             expect(parsed[day].open).toBe(480)
             expect(parsed[day].close).toBe(1080)
         })
+
+        expect(validateOpeningHours(parsed)).toBe(true)
 
     })
 

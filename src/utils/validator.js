@@ -50,13 +50,17 @@ export const openingHoursValidatorExpress = (openingHours, { req, location, path
     }
 }
 
-const validateOpeningHours = (openingHours) => {
+export const validateOpeningHours = (openingHours) => {
     const days = Object.keys(openingHours)
 
     for (const day of days) {
         const breaks = openingHours[day].breaks
         const open = openingHours[day].open
         const close = openingHours[day].close
+    
+        if (open === undefined || close === undefined) {
+            continue
+        }
 
         if (!validSegmentRange({ open, close }) || close <= open) {
             return false
