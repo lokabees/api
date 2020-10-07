@@ -17,6 +17,7 @@ export const isObjectId = value => /^[0-9a-fA-F]{24}$/.test(value)
 const validSegmentRange = segment => (segment.open >= 0 && segment.open <= 1440) && (segment.close >= 0 && segment.close <= 1440)
 
 export const HHMMtoMinutes = (hhmm) => {
+    if (hhmm === undefined) return undefined
     const split = hhmm.split(':')
     if (split.length !== 2) throw 'invalid format'
     return (parseInt(split[0]) * 60) + parseInt(split[1])
@@ -85,9 +86,16 @@ export const parseOpeningHours = (openingHours) => {
     const days = intersection(Object.keys(openingHours), ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 
     for (const day of days) {
+        const { open, close } = openingHours[day]
+        if (open === undefined || close === undefined) {
+            parsed[day] = {
+                breaks: []
+            }
+            continue
+        }
         parsed[day] = {
-            open: HHMMtoMinutes(openingHours[day].open),
-            close: HHMMtoMinutes(openingHours[day].close),
+            open: HHMMtoMinutes(open),
+            close: HHMMtoMinutes(close),
             breaks: []
         }
         openingHours[day]?.breaks.forEach((br) => {

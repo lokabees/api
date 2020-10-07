@@ -1,4 +1,4 @@
-import { passwordValidator, emailValidator, instagramValidator, facebookValidator, websiteValidator } from '~/utils/validator'
+import { passwordValidator, emailValidator, instagramValidator, facebookValidator, websiteValidator, parseOpeningHours } from '~/utils/validator'
 
 describe('website validation', () => {
     test('valid website with https+www', () => {
@@ -251,4 +251,83 @@ describe('password validation', () => {
         expect(valid).toBe(false)
     })
     
+})
+
+describe('openinghours parsing', () => {
+
+    test('default', () => {
+        const openingHours = {
+            monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+        }
+
+        const parsed = parseOpeningHours(openingHours)
+        expect(parsed).not.toBeUndefined()
+        Object.keys(openingHours).forEach((day) => {
+            expect(parsed[day]).not.toBeUndefined()
+            expect(parsed[day].open).toBe(480)
+            expect(parsed[day].close).toBe(1080)
+            expect(parsed[day].breaks).toHaveLength(1)
+            expect(parsed[day].breaks[0].from).toBe(720)
+            expect(parsed[day].breaks[0].to).toBe(780)
+            
+        })
+
+    })
+
+    test('default no breaks', () => {
+        const openingHours = {
+            monday: { open: '8:00', close: '18:00', breaks: [] },
+            tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+        }
+
+        const parsed = parseOpeningHours(openingHours)
+        expect(parsed).not.toBeUndefined()
+        expect(parsed.monday.breaks).toHaveLength(0)
+        expect(parsed.monday).not.toBeUndefined()
+        expect(parsed.monday.open).toBe(480)
+        expect(parsed.monday.close).toBe(1080)
+
+        Object.keys(openingHours).filter(day => day !== 'monday' ).forEach((day) => {
+            expect(parsed[day]).not.toBeUndefined()
+            expect(parsed[day].open).toBe(480)
+            expect(parsed[day].close).toBe(1080)
+        })
+
+    })
+
+    test('default empty days', () => {
+        const openingHours = {
+            monday: {},
+            tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+            sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+        }
+
+        const parsed = parseOpeningHours(openingHours)
+        expect(parsed).not.toBeUndefined()
+        expect(parsed.monday.breaks).toHaveLength(0)
+        expect(parsed.monday).not.toBeUndefined()
+
+        Object.keys(openingHours).filter(day => day !== 'monday' ).forEach((day) => {
+            expect(parsed[day]).not.toBeUndefined()
+            expect(parsed[day].open).toBe(480)
+            expect(parsed[day].close).toBe(1080)
+        })
+
+    })
+
 })
