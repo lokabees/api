@@ -93,8 +93,13 @@ router.post(
         body('images.*')
             .optional()
             .custom((value, { req, location, path }) => {
-                if (value.url === undefined || value.id === undefined) {
+                if (value.url === null && value.id === null) {
+                    return true
+                } else if (value.url === undefined || value.id === undefined) {
                     throw new Error(req.__(`${path}.validation`))
+                }
+                if (value.url === 'cdn-link' && value.id === 'placeholder') {
+                    return true
                 }
                 const match = value.url.match(cloudinaryValidator)
                 if (match === null || value.id !== match[4]) {
@@ -296,6 +301,9 @@ router.put('/:id',
                     return true
                 } else if (value.url === undefined || value.id === undefined) {
                     throw new Error(req.__(`${path}.validation`))
+                }
+                if (value.url === 'cdn-link' && value.id === 'placeholder') {
+                    return true
                 }
                 const match = value.url.match(cloudinaryValidator)
                 if (match === null || value.id !== match[4]) {
