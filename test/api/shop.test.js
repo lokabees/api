@@ -7,6 +7,7 @@ import { Shop, ShopCategory } from 'a/shop'
 import { apiRoot } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
 import { parseOpeningHours } from '~/utils/validator'
+import { encode } from 'ngeohash'
 
 let adminUser,
     adminToken,
@@ -180,6 +181,32 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
         expect(status).toBe(OK)
 
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/near/:geohash GUEST OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/near/${encode(49.019587, 8.422082)}`)
+            
+        expect(status).toBe(OK)
+        expect(body.count).toBe(1)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/near/:geohash USER OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/near/${encode(49.019587, 8.422082)}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+
+        expect(status).toBe(OK)
+        expect(body.count).toBe(1)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint}/near/:geohash ADMIN OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/near/${encode(49.019587, 8.422082)}`)
+            .set('Authorization', `Bearer ${adminToken}`)
+
+        expect(status).toBe(OK)
+        expect(body.count).toBe(2) // 2 because unpublished shops are getting shown
     })
 
     // CREATE

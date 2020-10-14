@@ -28,6 +28,7 @@ export const index = async ({ querymen, user, method }, res, next) => {
 
 export const getNear = async ({ querymen, user, method, params }, res, next) => {
     try {
+        
         const { geohash } = params
         if (!geohash) {
             res.status(BAD_REQUEST).end()
@@ -40,11 +41,11 @@ export const getNear = async ({ querymen, user, method, params }, res, next) => 
             return
         }
 
-        if (user?.role !== 'admin') { // If user is not admin we only want to show the published shops
+        if (user?.role !== 'admin') {
             querymen.query.published = true
         }
 
-        querymen.query.address.geometry = {
+        querymen.query['address.geometry'] = {
             $geoIntersects: {
                 $geometry: circleToPolygon([longitude, latitude], 20000, 32),
             }
