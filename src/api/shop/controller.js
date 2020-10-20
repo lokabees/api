@@ -6,6 +6,7 @@ import { category as ShopCategory } from './model'
 import circleToPolygon from 'circle-to-polygon'
 import { decode } from 'ngeohash'
 
+import { Product } from 'a/product'
 // Get all
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
@@ -88,6 +89,22 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
         }
 
         res.status(OK).json(shop.filter({ role: user?.role, method }))
+    } catch (error) {
+        errorHandler(res, error)
+    }
+}
+
+// Get all
+export const getProducts = async ({ params: { id}, querymen, user, method }, res, next) => {
+    try {
+        querymen.query.shop = id
+        const products = await Product.paginate(querymen, {
+            populate: [{ path: 'author' }],
+            method,
+            user
+        })
+
+        res.status(OK).json(products)
     } catch (error) {
         errorHandler(res, error)
     }

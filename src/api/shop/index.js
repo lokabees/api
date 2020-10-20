@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { addAuthor } from 's/request'
-import { create, index, show, update, destroy, getCategories, getNear } from './controller'
+import { create, index, show, update, destroy, getCategories, getNear, getProducts } from './controller'
 import { body } from 'express-validator'
 export Shop, { schema } from './model'
 // meh
@@ -369,5 +369,23 @@ router.put('/:id',
  *          description: Oh boi
  */
 router.delete('/:id', destroy)
+
+/**
+ * @swagger
+ * path:
+ *  /api/shops/:id/products:
+ *    get:
+ *      summary: Get products from shop
+ *      tags: [Shops, Products]
+ *      responses:
+ *        "200":
+ *          description: array with products from shop 
+ *        "403":
+ *          description: Missing permissions
+ *        "500":
+ *          description: Oh boi
+ */
+router.get('/:id/products', query(), getProducts)
+
 
 export default router

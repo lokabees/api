@@ -1,5 +1,6 @@
 import { Router } from 'express'
 /* ENDPOINT_ROUTER_IMPORT */
+import product, { Product } from './product'
 import map from './map'
 import shop, { Shop } from './shop'
 import media from './media'
@@ -11,6 +12,7 @@ import user, { User } from './user'
 const router = new Router()
 
 /* ENDPOINT_ROUTER_EXPORT */
+router.use('/products', product)
 router.use('/maps', map)
 router.use('/shops', shop)
 router.use('/media', media)
@@ -22,6 +24,7 @@ router.use('/password-reset', passwordReset)
 // Export the relevant models for swagger documentation
 export const Models = [
     /* ENDPOINT_DOCS_EXPORT */
+Product,
     Shop,
     User
 ]

@@ -3,6 +3,7 @@ import request from 'supertest'
 import server from '~/server'
 import { sign } from 's/auth'
 import { User } from 'a/user'
+import { Product } from 'a/product'
 import { Shop, ShopCategory } from 'a/shop'
 import { apiRoot } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
@@ -16,6 +17,8 @@ let adminUser,
     defaultUser,
     defaultToken,
     adminShop,
+    adminProduct,
+    defaultProduct,
     apiEndpoint = 'shops'
 
 beforeEach(async () => {
@@ -114,6 +117,8 @@ beforeEach(async () => {
         author: adminUser,
         published: true
     })
+    defaultProduct = await Product.create({ description: 'nice product', title: 'product', category: 'category', author: defaultUser._id, shop: shop._id })
+    adminProduct = await Product.create({ description: 'nice product', title: 'product', category: 'category', author: adminUser._id, shop: adminShop._id })
 
     category = await ShopCategory.create({ name: 'category1' })
 
@@ -209,6 +214,33 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(body.count).toBe(2) // 2 because unpublished shops are getting shown
     })
 
+    // Products
+    test(`GET ${apiRoot}/${apiEndpoint} GUEST OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${adminShop._id}/products`)
+
+        expect(body.rows).toHaveLength(1)
+        expect(status).toBe(OK)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint} USER OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${adminShop._id}/products`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+
+        expect(body.rows).toHaveLength(1)
+        expect(status).toBe(OK)
+    })
+
+    test(`GET ${apiRoot}/${apiEndpoint} ADMIN OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/${adminShop._id}/products`)
+            .set('Authorization', `Bearer ${adminToken}`)
+
+        expect(body.rows).toHaveLength(1)
+        expect(status).toBe(OK)
+    })
+    
     // CREATE
     test(`POST ${apiRoot}/${apiEndpoint}/ ADMIN CREATED`, async () => {
         const { status, body, error } = await request(server)
@@ -360,6 +392,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 published: true,
                 delivery: ['MD', 'LD']
             })
+        console.log(error)
         expect(status).toBe(CREATED)
         // slug got generated
         expect(body.slug).not.toBeUndefined()
