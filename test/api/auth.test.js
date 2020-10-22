@@ -6,7 +6,7 @@ import { sign, decode } from 's/auth'
 import { User } from 'a/user'
 import Session from 'a/session'
 
-import { OK, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST } from 'http-status-codes'
+import { OK, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST, FORBIDDEN } from 'http-status-codes'
 
 const { secret } = jwtConfig
 
@@ -61,7 +61,7 @@ describe('Auth Test:', () => {
             .post(`${apiRoot}/auth?master=${masterKey}`)
             .send({ email: 'marty0@getit.social', password: 'Passwort213!!!' })
 
-        expect(statusCode).toBe(UNAUTHORIZED)
+        expect(statusCode).toBe(FORBIDDEN)
     })
 
     test(`POST ${apiRoot}/auth UNAUTHORIZED - NO MASTERKEY`, async () => {
@@ -93,7 +93,7 @@ describe('Auth Test:', () => {
             .post(`${apiRoot}/auth?master=${masterKey}`)
             .send({ email: 'unverified@getit.social', password: 'Passwort213!!!' })
 
-        expect(statusCode).toBe(UNAUTHORIZED)
+        expect(statusCode).toBe(FORBIDDEN)
     })
 
     test(`POST ${apiRoot}/auth BAD_REQUEST`, async () => {

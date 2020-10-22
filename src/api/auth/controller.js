@@ -1,7 +1,7 @@
 import { User } from 'a/user'
 import { Session } from 'a/session'
 import { sign, destroy, comparePassword, providerAuth } from 's/auth'
-import { OK, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST } from 'http-status-codes'
+import { OK, UNAUTHORIZED, NO_CONTENT, BAD_REQUEST, FORBIDDEN } from 'http-status-codes'
 import { extractToken } from 's/auth/utils'
 import { errorHandler } from 's/response'
 
@@ -24,7 +24,7 @@ export const authenticate = async ({ body: { email, password }, device }, res, n
         }
 
         if (!user.verified) {
-            res.status(UNAUTHORIZED).json({ valid: false, message: res.__('unverified') }).end()
+            res.status(FORBIDDEN).json({ valid: false, message: res.__('unverified') }).end()
             return
         }
 
