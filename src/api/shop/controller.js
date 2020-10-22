@@ -97,6 +97,11 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
 // Get all
 export const getProducts = async ({ params: { id}, querymen, user, method }, res, next) => {
     try {
+        const shop = await Shop.findById(id)
+        if (!shop || !shop.published && !Shop.isOwner(shop, user)) {
+            res.status(NOT_FOUND).end()
+            return
+        }
         querymen.query.shop = id
         const products = await Product.paginate(querymen, {
             populate: [{ path: 'author' }],
