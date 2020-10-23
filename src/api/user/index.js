@@ -204,6 +204,7 @@ router.post(
     [
         body('name').exists().isString().notEmpty(),
         body('email').exists().normalizeEmail().isEmail(),
+        body('newsletter').optional().isBoolean(),
         body('password')
             .exists()
             .matches(passwordValidator)
@@ -269,6 +270,7 @@ router.post(
 router.put('/:id', 
     [
         body('name').optional().isString().notEmpty(),
+        body('newsletter').optional().isBoolean(),
         body('picture')
             .optional()
             .custom((value, { req, location, path }) => {

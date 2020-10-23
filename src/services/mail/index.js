@@ -1,4 +1,2 @@
-export { sendVerification } from './postmark/index.js'
-export { sendPasswordReset } from './postmark/index.js'
-
-// Import + Export the sendgrid marketing stuff here if necessary
+export { sendVerification, sendPasswordReset } from './postmark/index.js'
+export { subscribeUser, unsubscribeUser, isSubscribed } from './mailchimp/index.js'

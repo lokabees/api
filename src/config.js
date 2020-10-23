@@ -24,6 +24,11 @@ const config = {
             expiresIn: '8d',
             algorithms: ['HS256']
         },
+        mailchimpConfig: {
+            secret: requireProcessEnv('MAILCHIMP_API'),
+            list: requireProcessEnv('MAILCHIMP_LIST'),
+            prefix: requireProcessEnv('MAILCHIMP_PREFIX')
+        },
         fileUploadConfig: {
             limits: {
                 fileSize: 10 * 1024 * 1024,

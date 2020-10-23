@@ -7,7 +7,7 @@ import rules from './acl'
 import userAcl from 'a/user/acl'
 import { passwordValidator, emailValidator } from '~/utils/validator'
 import randtoken from 'rand-token'
-
+import { subscribeUser, unsubscribeUser } from 's/mail'
 const roles = ['guest', 'user', 'admin']
 const userSchema = new Schema(
     {
@@ -58,6 +58,13 @@ const userSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Shop',
         },
+        newsletter: {
+            type: Boolean,
+            default: false
+        },
+        newsletterId: {
+            type: String
+        },
         shops: {
             type: [
                 {
@@ -83,6 +90,19 @@ userSchema.pre('save', async function(next) {
 
     this.password = await hashPassword(this.password)
     return next()
+})
+
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('newsletter')) {
+        return next()
+    }
+    const type = this.activeShop !== undefined ? 'store owner' : 'shopper'
+    if (this.newsletter) {
+        this.newsletterId = subscribeUser(this.email, type)
+    } else {
+        unsubscribeUser(this.newsletterId)
+        this.newsletterId = ''
+    }
 })
 
 userSchema.statics = {

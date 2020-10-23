@@ -27,7 +27,7 @@ export default (apiRoot, routes) => {
     const app = express()
     /* istanbul ignore next */
 
-    if (env === 'production' || env === 'development') {
+    if (env !== 'test') {
         app.use(helmet())
         app.use(limiter)
         app.use(cors())
