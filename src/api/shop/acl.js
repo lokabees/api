@@ -6,7 +6,7 @@ const permissions = [
                 resource: 'shops/*',
                 methods: ['GET'],
                 action: 'allow',
-                view: ['name', 'slug', 'contact', 'description', 'address', 'openingHours', 'isOpen', 'author', 'author.name', 'categories', 'images', 'delivery']
+                view: ['_id', 'name', 'slug', 'contact', 'description', 'address', 'openingHours', 'isOpen', 'author', 'author.name', 'categories', 'images', 'delivery']
             }
         ]
     },
