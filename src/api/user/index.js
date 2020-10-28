@@ -209,18 +209,6 @@ router.post(
             .exists()
             .matches(passwordValidator)
             .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
-        body('picture')
-            .optional()
-            .custom((value, { req, location, path }) => {
-                if (value.url === undefined || value.id === undefined) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                const match = value.url.match(cloudinaryValidator)
-                if (match === null || value.id !== match[4]) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                return true
-        }),
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,
@@ -252,9 +240,6 @@ router.post(
  *              properties:
  *                name:
  *                  type: string
- *                picture:
- *                  type: string
- *                  format: uri
  *      responses:
  *        "200":
  *          description: User schema (fields depend on the ACL)
@@ -270,19 +255,7 @@ router.post(
 router.put('/:id', 
     [
         body('name').optional().isString().notEmpty(),
-        body('newsletter').optional().isBoolean(),
-        body('picture')
-            .optional()
-            .custom((value, { req, location, path }) => {
-                if (value.url === undefined || value.id === undefined) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                const match = value.url.match(cloudinaryValidator)
-                if (match === null || value.id !== match[4]) {
-                    throw new Error(req.__(`${path}.validation`))
-                }
-                return true
-        })
+        body('newsletter').optional().isBoolean()
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,

@@ -624,36 +624,6 @@ describe('TEST USER GRAVATAR', () => {
         expect(user.picture).not.toBeUndefined()
     })
 
-    test('Create user with picture', async () => {
-        const user = await User.create({
-            name: 'fritz',
-            email: 'fritz@getit.social',
-            password: 'SuperPasswort123?!',
-            role: 'admin',
-            picture: 'https://www.getit.social'
-        })
-
-        expect(user.picture).toBe('https://www.getit.social')
-    })
-
-    test('Update user email with picture', async () => {
-        const user = await User.create({
-            name: 'fritz',
-            email: 'fritz@getit.social',
-            password: 'SuperPasswort123?!',
-            role: 'admin',
-            picture: 'https://www.getit.social'
-        })
-
-        expect(user.picture).toBe('https://www.getit.social')
-
-        await user.set({ email: 'gerda@getit.social'}).save()
-
-        // picture should not get updated
-        expect(user.picture).toBe('https://www.getit.social')
-
-    })
-
     test('Update user email with gravatar', async () => {
         const user = await User.create({
             name: 'fritz',

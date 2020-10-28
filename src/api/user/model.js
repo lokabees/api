@@ -46,10 +46,6 @@ const userSchema = new Schema(
             enum: roles,
             default: 'user'
         },
-        picture: {
-            type: String,
-            trim: true
-        },
         verified: {
             type: Boolean,
             default: false

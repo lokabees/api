@@ -6,7 +6,7 @@ const permissions = [
                 resource: 'users/',
                 methods: ['POST'],
                 action: 'allow',
-                view: ['_id', 'verified', 'role', 'picture', 'name', 'email', 'newsletter']
+                view: ['_id', 'verified', 'role', 'picture', 'name']
             }
         ]
     },
