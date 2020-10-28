@@ -4,7 +4,7 @@ import { postmark, env } from '~/config'
 const client = new Client(postmark.apiKey)
 
 const verificationLink = token => `${process.env.API_URL}/api/verification/${token}`
-const passwordLink = token => `${process.env.APP_URL}/password-reset/${token}`
+const passwordLink = token => `${process.env.APP_URL}/auth/password-reset/${token}`
 const loginLink = `${process.env.APP_URL}/login`
 
 export const sendPasswordReset = async (To, name, token, os, browser) => {
