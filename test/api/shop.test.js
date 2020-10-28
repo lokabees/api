@@ -210,6 +210,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
             .get(`${apiRoot}/${apiEndpoint}/near/${encode(49.019587, 8.422082)}`)
             .set('Authorization', `Bearer ${adminToken}`)
 
+        // console.log(body.rows)
         expect(status).toBe(OK)
         expect(body.count).toBe(2) // 2 because unpublished shops are getting shown
     })

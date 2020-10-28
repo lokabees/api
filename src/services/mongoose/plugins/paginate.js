@@ -26,7 +26,7 @@ export default function paginate(schema, { rules }) {
             const select = {}
             // create intersection between view and wantedFields,
             // then exclude the nested fields and select those that are left
-            view.filter(v => wantedFields.includes(v)).filter(v => !v.includes('.')).forEach(key => {
+            view.filter(v => wantedFields.length === 0 || wantedFields.includes(v)).filter(v => !v.includes('.')).forEach(key => {
                 select[key] = 1
             })
 
@@ -43,7 +43,7 @@ export default function paginate(schema, { rules }) {
                 this.countDocuments(query),
                 this.find(query, select, cursor)
                     .populate(populate)
-                    .lean()
+                    .lean({ virtuals: true })
             ])
 
             const page = Math.floor(cursor.skip / cursor.limit) + 1

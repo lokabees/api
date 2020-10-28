@@ -8,6 +8,8 @@ import slugify from 'slugify'
 import { facebookValidator, instagramValidator, emailValidator, websiteValidator, openingHoursValidatorMongoose as openingHoursValidator, minutesToHHMM } from '~/utils/validator'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import { User } from 'a/user'
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals'
+
 // schema for shop
 const shopSchema = new Schema(
     {
@@ -141,7 +143,7 @@ const shopSchema = new Schema(
 
 shopSchema.virtual('isOpen').get(function () {
     
-    if (Object.keys(this.parsedOpeningHours).length === 0) {
+    if (!this.parsedOpeningHours || Object.keys(this.parsedOpeningHours).length === 0) {
         return false
     }
     moment.locale('de')
@@ -230,6 +232,7 @@ shopSchema.pre('validate', async function(next) {
     next()
 })
 
+shopSchema.plugin(mongooseLeanVirtuals)
 shopSchema.plugin(filter, { rules })
 shopSchema.plugin(paginate, { rules, populateRules: { author: userAcl } })
 shopSchema.plugin(ownership)
