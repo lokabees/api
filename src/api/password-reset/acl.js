@@ -8,6 +8,26 @@ const permissions = [
                 action: 'allow',
             }
         ]
+    },
+    {
+        group: 'user',
+        permissions: [
+            {
+                resource: 'password-reset/*',
+                methods: ['GET', 'POST', 'PATCH'],
+                action: 'allow',
+            }
+        ]
+    },
+    {
+        group: 'admin',
+        permissions: [
+            {
+                resource: 'password-reset/*',
+                methods: ['GET', 'POST', 'PATCH'],
+                action: 'allow',
+            }
+        ]
     }
 ]
 

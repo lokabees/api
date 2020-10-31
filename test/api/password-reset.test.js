@@ -41,19 +41,23 @@ beforeEach(async () => {
         user: defaultUser._id
     })
 
+    const reset1 = await PasswordReset.create({
+        user: adminUser._id
+    })
+
     token = reset.token
 
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
-    test(`POST ${apiRoot}/${apiEndpoint} USER FORBIDDEN`, async () => {
-        const { status } = await request(server)
+    test(`POST ${apiRoot}/${apiEndpoint} USER NO_CONTENT`, async () => {
+        const { status, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({ email: defaultUser.email })
 
-        expect(status).toBe(FORBIDDEN)
+        expect(status).toBe(NO_CONTENT)
     })
 
     test(`POST ${apiRoot}/${apiEndpoint} GUEST NO_CONTENT`, async () => {
@@ -64,22 +68,22 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(NO_CONTENT)
     })
 
-    test(`POST ${apiRoot}/${apiEndpoint} ADMIN FORBIDDEN`, async () => {
+    test(`POST ${apiRoot}/${apiEndpoint} ADMIN NO_CONTENT`, async () => {
         const { status } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
             .set('Authorization', `Bearer ${adminToken}`)
             .send({ email: defaultUser.email })
 
-        expect(status).toBe(FORBIDDEN)
+        expect(status).toBe(NO_CONTENT)
     })
 
-    test(`PATCH ${apiRoot}/${apiEndpoint}/:token USER FORBIDDEN`, async () => {
+    test(`PATCH ${apiRoot}/${apiEndpoint}/:token USER NO_CONTENT`, async () => {
         const { status } = await request(server)
             .patch(`${apiRoot}/${apiEndpoint}/${token}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({ password: 'Passwort123?!!?' })
 
-        expect(status).toBe(FORBIDDEN)
+        expect(status).toBe(NO_CONTENT)
     })
 
     test(`PATCH ${apiRoot}/${apiEndpoint}/:token GUEST NO_CONTENT`, async () => {
@@ -90,13 +94,13 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(NO_CONTENT)
     })
 
-    test(`PATCH ${apiRoot}/${apiEndpoint}/:token ADMIN FORBIDDEN`, async () => {
+    test(`PATCH ${apiRoot}/${apiEndpoint}/:token ADMIN NO_CONTENT`, async () => {
         const { status } = await request(server)
             .patch(`${apiRoot}/${apiEndpoint}/${token}`)
             .send({ password: 'Passwort123?!!?' })
             .set('Authorization', `Bearer ${adminToken}`)
 
-        expect(status).toBe(FORBIDDEN)
+        expect(status).toBe(NO_CONTENT)
     })
 
 })
@@ -185,8 +189,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint}`,  () => {
             .get(`${apiRoot}/${apiEndpoint}/${token}`)
 
         expect(status).toBe(OK)
-        const { picture, name } = body
-        expect(picture).not.toBeUndefined()
+        const { name } = body
         expect(name).not.toBeUndefined()
     })
 

@@ -25,14 +25,14 @@ export const extractToken = req => {
 
 export const extractMaster = req => {
 
-    // Extract JWT from Header
-    if (req.headers?.authorization?.split(' ')[0] === 'Bearer') {
-        return req.headers.authorization.split(' ')[1]
-    }
-
     // Extract JWT from Query
     if (req.query?.master) {
         return req.query.master
+    }
+
+    // Extract JWT from Header
+    if (req.headers?.authorization?.split(' ')[0] === 'Bearer') {
+        return req.headers.authorization.split(' ')[1]
     }
 
     // Extract JWT from Body

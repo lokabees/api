@@ -7,7 +7,6 @@ import { Shop } from 'a/shop'
 import { apiRoot, masterKey } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST, CONFLICT } from 'http-status-codes'
 import { parseOpeningHours } from '~/utils/validator'
-import { defaultTo } from 'lodash'
 
 let adminUser,
     adminToken,
