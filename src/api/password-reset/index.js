@@ -98,7 +98,7 @@ router.post(
  * @swagger
  * path:
  *  /api/password-reset/{token}:
- *    put:
+ *    patch:
  *      summary: Update user password
  *      tags: [Password-Reset]
  *      parameters:
