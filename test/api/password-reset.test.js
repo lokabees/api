@@ -5,7 +5,7 @@ import { Router } from 'express'
 import { User } from 'a/user'
 import { Session } from 'a/session'
 import { sign } from 's/auth'
-import { apiRoot, masterKey } from '~/config'
+import { apiRoot } from '~/config'
 import { PasswordReset } from 'a/password-reset'
 import { FORBIDDEN, NO_CONTENT, OK, BAD_REQUEST } from 'http-status-codes'
 
@@ -53,7 +53,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     test(`POST ${apiRoot}/${apiEndpoint} USER NO_CONTENT`, async () => {
         const { status, error } = await request(server)
-            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
             .send({ email: defaultUser.email })
 
@@ -62,7 +62,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     test(`POST ${apiRoot}/${apiEndpoint} GUEST NO_CONTENT`, async () => {
         const { status } = await request(server)
-            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .post(`${apiRoot}/${apiEndpoint}`)
             .send({ email: defaultUser.email })
 
         expect(status).toBe(NO_CONTENT)
@@ -70,7 +70,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
 
     test(`POST ${apiRoot}/${apiEndpoint} ADMIN NO_CONTENT`, async () => {
         const { status } = await request(server)
-            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${adminToken}`)
             .send({ email: defaultUser.email })
 
@@ -109,7 +109,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint}`,  () => {
 
     test(`POST ${apiRoot}/${apiEndpoint} GUEST NO_CONTENT`, async () => {
         const { status } = await request(server)
-            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .post(`${apiRoot}/${apiEndpoint}`)
             .send({ email: defaultUser.email })
 
         expect(status).toBe(NO_CONTENT)
@@ -120,7 +120,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint}`,  () => {
 
     test(`POST ${apiRoot}/${apiEndpoint} GUEST NO_CONTENT USER ENUMERATION`, async () => {
         const { status } = await request(server)
-            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .post(`${apiRoot}/${apiEndpoint}`)
             .send({ email: 'bullshitmail@lolol.com' })
 
         expect(status).toBe(NO_CONTENT)

@@ -1,6 +1,5 @@
 import { Router } from 'express'
 export PasswordReset, { schema } from './model'
-import { masterman } from '~/services/auth'
 import { body } from 'express-validator'
 import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
 import { passwordValidator } from '~/utils/validator'
@@ -60,8 +59,6 @@ router.get('/:token', show)
  *    post:
  *      summary: Create a new password-reset thingy
  *      tags: [Password-Reset]
- *      security:
- *        - masterKey: []
  *      requestBody:
  *        required: true
  *        content:
@@ -76,14 +73,11 @@ router.get('/:token', show)
  *          description: Password-Reset mail got sent or user does not exist
  *        "400":
  *          description: Invalid Body
- *        "401":
- *          description: Missing masterkey
  *        "500":
  *          description: Oh boi
  */
 router.post(
     '',
-    masterman(),
     [
         body('email')
             .optional()
