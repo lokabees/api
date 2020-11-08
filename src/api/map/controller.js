@@ -1,3 +1,4 @@
+
 import { OK, NOT_FOUND } from 'http-status-codes'
 import { errorHandler } from 's/response'
 import mbx from '@mapbox/mapbox-sdk/services/geocoding'
@@ -11,7 +12,7 @@ export const suggest = async ({ query }, res, next) => {
         const { body: { features }} = await geocodingClient.forwardGeocode({
             query: query.q,
             limit: 1,
-            countries: ['DE'],
+            countries: ['DE', 'AT'],
             language: ['DE']
         }).send()
 

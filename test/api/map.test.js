@@ -59,4 +59,12 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(OK)
     })
 
+    test(`GET ${apiRoot}/${apiEndpoint}/suggest AUSTRIA OK`, async () => {
+        const { status, body } = await request(server)
+            .get(`${apiRoot}/${apiEndpoint}/suggest?q=Wien`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+
+        expect(status).toBe(OK)
+    })
+
 })
