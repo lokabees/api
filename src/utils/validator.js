@@ -26,6 +26,9 @@ export const HHMMtoMinutes = (hhmm) => {
 export const minutesToHHMM = (minutes) => {
     const m = minutes % 60    
     const h = (minutes-m) / 60
+    if (Number.isNaN(m) || Number.isNaN(h)) {
+        return undefined
+    }
     return `${h<10?'0':''}${h}:${m<10?'0':''}${m}`
 }
 

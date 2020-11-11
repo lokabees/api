@@ -393,7 +393,7 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
                 published: true,
                 delivery: ['MD', 'LD']
             })
-        console.log(error)
+
         expect(status).toBe(CREATED)
         // slug got generated
         expect(body.slug).not.toBeUndefined()
@@ -663,6 +663,46 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
     })
 
     test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED minimum`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postcode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
+                },
+                openingHours: {
+                    monday: { breaks: [] },
+                    tuesday: { breaks: [] },
+                    wednesday: { breaks: [] },
+                    thursday: { breaks: [] },
+                    friday: { breaks: [] },
+                    saturday: { breaks: [] },
+                    sunday: { breaks: [] },
+                }
+            })
+        expect(body.openingHours.monday.open).toBeUndefined()
+        expect(body.openingHours.monday.close).toBeUndefined()
+        expect(body.openingHours.monday.breaks).toHaveLength(0)
+        expect(status).toBe(CREATED)
+    })
+
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER CREATED empty openinghours`, async () => {
         const { status, body, error } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)
             .set('Authorization', `Bearer ${defaultToken}`)
