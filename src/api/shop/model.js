@@ -159,10 +159,11 @@ shopSchema.virtual('isOpen').get(function () {
     ][date.getDay()]
 
     const minutes = moment().tz('Europe/Berlin').hours() * 60 + moment().minutes()
+    const today = this.parsedOpeningHours[day]
+    const { open = -1, close = -1, breaks } = today
+    const isOpen = open <= minutes && close >= minutes
 
-    const isOpen = this.parsedOpeningHours[day].open <= minutes && this.parsedOpeningHours[day].close >= minutes
-
-    const isBreak = this.parsedOpeningHours[day].breaks.findIndex(br => br.from <= minutes && br.to >= minutes) !== -1
+    const isBreak = breaks.findIndex(br => br.from <= minutes && br.to >= minutes) !== -1
 
     return isOpen && !isBreak
 
