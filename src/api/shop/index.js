@@ -7,9 +7,8 @@ export Shop, { schema } from './model'
 // meh
 import { category } from "./model";
 export const ShopCategory = category
-import { facebookValidator, instagramValidator, websiteValidator, cloudinaryValidator, parseOpeningHours, openingHoursValidatorExpress } from '~/utils/validator'
+import { validatePhone, facebookValidator, instagramValidator, websiteValidator, cloudinaryValidator, parseOpeningHours, openingHoursValidatorExpress } from '~/utils/validator'
 import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 // workaround to fix import / export issues >:(
 const categoryValidator = async (categories, { req, location, path }) => {
@@ -85,7 +84,7 @@ router.post(
             .matches(facebookValidator)
             .withMessage((_, { req, location, path }) => req.__(`${path}.validation`)),
         body('contact.phone').optional().custom((value, { req }) => {
-            if (!parsePhoneNumberFromString(value).isValid()) {
+            if (!validatePhone(value)) {
                 throw new Error(req.__(`${path}.validation`)) 
             }
             return true
@@ -289,7 +288,7 @@ router.put('/:id',
             .matches(facebookValidator)
             .withMessage((_, { req, location, path}) => req.__(`${path}.validation`)),
         body('contact.phone').optional().custom((value, { req }) => {
-            if (!parsePhoneNumberFromString(value).isValid()) {
+            if (!validatePhone(value)) {
                 throw new Error(req.__('contact.phone.validation')) 
             }
             return true

@@ -5,8 +5,7 @@ import { paginate, filter, ownership } from 's/mongoose'
 import rules from './acl'
 import userAcl from 'a/user/acl'
 import slugify from 'slugify'
-import { facebookValidator, instagramValidator, emailValidator, websiteValidator, openingHoursValidatorMongoose as openingHoursValidator, minutesToHHMM } from '~/utils/validator'
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { validatePhone, facebookValidator, instagramValidator, emailValidator, websiteValidator, openingHoursValidatorMongoose as openingHoursValidator, minutesToHHMM } from '~/utils/validator'
 import { User } from 'a/user'
 import mongooseLeanVirtuals from 'mongoose-lean-virtuals'
 
@@ -54,7 +53,7 @@ const shopSchema = new Schema(
             phone: {
                 type: String,
                 validate: {
-                    validator: value => parsePhoneNumberFromString(value).isValid(),
+                    validator: value => validatePhone(value),
                     message: _ => 'Phone is invalid'
                 }  
             }, 

@@ -1,4 +1,4 @@
-import { passwordValidator, emailValidator, instagramValidator, facebookValidator, websiteValidator, parseOpeningHours, validateOpeningHours } from '~/utils/validator'
+import { validatePhone, passwordValidator, emailValidator, instagramValidator, facebookValidator, websiteValidator, parseOpeningHours, validateOpeningHours } from '~/utils/validator'
 
 describe('website validation', () => {
     test('valid website with https+www', () => {
@@ -166,6 +166,20 @@ describe('facebook validation', () => {
     test('with wrong tld', () => {
         const valid = facebookValidator.test('https://facebook.de/meinladen')
         expect(valid).toBe(false)
+    })
+
+})
+
+describe('phone validation', () => {
+
+    test('default', () => {
+        const valid = validatePhone('015232031055')
+        expect(valid).toBe(true)
+    })
+
+    test('default', () => {
+        const valid = validatePhone('+49 1523 2031056')
+        expect(valid).toBe(true)
     })
 
 })
