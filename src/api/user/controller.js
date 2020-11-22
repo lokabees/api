@@ -3,6 +3,8 @@ import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, CONFLICT } from 'http-st
 import { Verification } from 'a/verification'
 import { errorHandler } from 's/response'
 import { sendVerification } from 's/mail'
+import { Referral } from 'a/referral'
+import { Shop } from 'a/shop'
 
 export const index = async ({ querymen, user, method }, res, next) => {
     try {
@@ -30,7 +32,7 @@ export const show = async ({ user: { _id, role }, method, params: { id } }, res)
 
 export const setActiveShop = async ({ user: { _id, role }, body: { shop }, params: { id } }, res) => {
     try {
-        
+
         if (_id !== id && role !== 'admin') {
             res.status(FORBIDDEN).json({ valid: false, message: res.__('missing-permission')})
             return
@@ -92,7 +94,7 @@ export const getShops = async ({ user: { _id, role }, method, params: { id } }, 
     }
 }
 
-export const create = async ({ body , method, user }, res, next) => {
+export const create = async ({ body, method, user }, res, next) => {
     try {
 
         if (await User.findOne({ email: body.email }) !== null) {

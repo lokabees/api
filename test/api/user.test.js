@@ -4,6 +4,7 @@ import server from '~/server'
 import { sign } from 's/auth'
 import { User } from 'a/user'
 import { Shop } from 'a/shop'
+import { Referral } from 'a/referral'
 import { apiRoot, masterKey } from '~/config'
 import { NOT_FOUND, OK, CREATED, FORBIDDEN, NO_CONTENT, UNAUTHORIZED, BAD_REQUEST, CONFLICT } from 'http-status-codes'
 import { parseOpeningHours } from '~/utils/validator'
@@ -126,6 +127,25 @@ beforeEach(async () => {
     defaultToken = (await sign(defaultUser)).token
     user1Token = (await sign(user1)).token
 
+})
+
+describe('User Referral', () => {
+    // CREATE
+    test(`POST ${apiRoot}/${apiEndpoint}/ GUEST CREATED`, async () => {
+        const ref = await Referral.create({ shop: shop._id })
+        const { status, body } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}?master=${masterKey}`)
+            .send({ email: 'marty2@getit.social', password: 'SoEinGutesPasswortOmg123?!', name: 'Marty', referral: ref.uuid })
+
+        expect(status).toBe(CREATED)
+
+        const { verified, shops, activeShop } = await User.findOne({ email: 'marty2@getit.social' })
+        expect(verified).toBe(false)
+        const { _id } = await Shop.findById(activeShop)
+        expect(_id.toString()).toEqual(shop._id.toString())
+        const keys = Object.keys(body)
+        expect(keys).toEqual(expect.arrayContaining(['_id', 'verified', 'role', 'name', 'email']))
+    })
 })
 
 describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {

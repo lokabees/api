@@ -76,7 +76,8 @@
 		"request-promise": "^4.2.5",
 		"slugify": "^1.4.5",
 		"swagger-jsdoc": "^4.0.0",
-		"swagger-ui-express": "^4.1.4"
+		"swagger-ui-express": "^4.1.4",
+		"uuid": "^8.3.1"
 	},
 	"jest": {
 		"testResultsProcessor": "jest-sonar-reporter",

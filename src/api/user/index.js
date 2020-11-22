@@ -4,6 +4,8 @@ import { body } from 'express-validator'
 import { masterman } from 's/auth'
 import { passwordValidator } from '~/utils/validator'
 import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
+import { validate as uuidValidate } from 'uuid'
+import referralMiddleware from 's/referral'
 export User, { schema } from './model'
 
 import {
@@ -205,6 +207,14 @@ router.post(
         body('name').exists().isString().notEmpty(),
         body('email').exists().normalizeEmail().isEmail(),
         body('newsletter').optional().isBoolean(),
+        body('referral')
+            .optional()
+            .custom((value, { req, _, path }) => {
+                if (!uuidValidate(value)) {
+                    throw new Error(req.__(`${path}.validation`))
+                }
+                return true
+        }),
         body('password')
             .exists()
             .matches(passwordValidator)
@@ -212,6 +222,7 @@ router.post(
     ],
     onlyAllowMatched,
     expressValidatorErrorChain,
+    referralMiddleware,
     create
 )
 
