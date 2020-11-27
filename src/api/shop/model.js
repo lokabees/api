@@ -111,12 +111,18 @@ const shopSchema = new Schema(
             required: true,
             description: 'unpublished shops will not be accessible for the public (only owner+author+admin)'
         },
-        categories: [
-            {
-                type: 'ObjectId',
-                ref: 'ShopCategory'
-            }
-        ],
+        categories: {
+            type: [
+                {
+                    type: 'ObjectId',
+                    ref: 'ShopCategory'
+                }
+            ],
+            validate: [
+                categories => categories.length <= 3,
+                'only 3 categories per user'
+            ]
+        },
         parsedOpeningHours: {
             type: Object,
             monday: [{ open: { type: Number }, close: { type: Number } }],

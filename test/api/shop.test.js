@@ -567,6 +567,46 @@ describe(`TEST ${apiRoot}/${apiEndpoint} ACL`,  () => {
         expect(status).toBe(BAD_REQUEST)
     })
 
+    test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD_REQUEST WRONG CATEGORY`, async () => {
+        const { status, body, error } = await request(server)
+            .post(`${apiRoot}/${apiEndpoint}`)
+            .set('Authorization', `Bearer ${defaultToken}`)
+            .send({
+                name: 'Kekse!',
+                description: 'hi',
+                address: {
+                    name: 'Klosterweg 28, 76131 Karlsruhe, Deutschland',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [
+                        8.422082,
+                        49.019587
+                      ]
+                    },
+                    number: '28',
+                    street: 'Klosterweg',
+                    postcode: '76131',
+                    city: 'Karlsruhe',
+                    state: 'Baden-Württemberg',
+                    country: 'Deutschland',
+                    locality: 'Oststadt Nördlicher Teil'
+                },
+                openingHours: {
+                    monday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    tuesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    wednesday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    thursday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    friday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    saturday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                    sunday: { open: '8:00', close: '18:00', breaks: [{ from: '12:00', to: '13:00' }] },
+                },
+                categories: [category, category, category, category]
+            })
+    
+        expect(status).toBe(BAD_REQUEST)
+    })
+
+
     test(`POST ${apiRoot}/${apiEndpoint}/ USER BAD REQUEST missing name`, async () => {
         const { status, body } = await request(server)
             .post(`${apiRoot}/${apiEndpoint}`)

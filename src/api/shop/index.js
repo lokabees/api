@@ -13,6 +13,7 @@ import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
 // workaround to fix import / export issues >:(
 const categoryValidator = async (categories, { req, location, path }) => {
     try {
+        if (categories.length > 3) throw new Error(req.__(`${path}.validation`))
         const dbCategories = (await ShopCategory.find()).map(a => a._id.toString())
         if (categories.every((category) => dbCategories.includes(category))) return true
         throw new Error(req.__(`${path}.validation`))
