@@ -240,9 +240,9 @@ describe('password validation', () => {
         expect(valid).toBe(true)
     })
 
-    test('missing special chars', () => {
+    test('no special chars needed', () => {
         const valid = passwordValidator.test('GutesPasswort123')
-        expect(valid).toBe(false)
+        expect(valid).toBe(true)
     })
 
     test('missing length', () => {
