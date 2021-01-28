@@ -106,7 +106,7 @@ const config = {
     },
     development: {
         mongo: {
-            uri: 'mongodb://localhost/testgenerator-dev',
+            uri: process.env.MONGODB_URI,
             options: {
                 debug: true,
                 useCreateIndex: true,

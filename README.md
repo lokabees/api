@@ -75,6 +75,11 @@ The easiest way to install mongoDB is with docker:
 docker pull mongo
 ```
 
+To run the mongo instance in docker:
+```sh
+docker run -d -p 27017-27019:27017-27019 --name mongodb mongo
+```
+
 ### Installation
 
 2. Clone the repo
