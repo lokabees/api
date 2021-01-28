@@ -203,7 +203,7 @@ router.post(
     masterman(),
     [
         body('name').exists().isString().notEmpty(),
-        body('email').exists().normalizeEmail().isEmail(),
+        body('email').exists().isEmail(),
         body('newsletter').optional().isBoolean(),
         body('password')
             .exists()
