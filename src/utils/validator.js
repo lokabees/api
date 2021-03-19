@@ -65,7 +65,7 @@ export const validateOpeningHours = (openingHours) => {
         const open = openingHours[day].open
         const close = openingHours[day].close
     
-        if (open === undefined || close === undefined) {
+        if (!open || !close) {
             continue
         }
 
@@ -98,7 +98,7 @@ export const parseOpeningHours = (openingHours) => {
 
     for (const day of days) {
         const { open, close } = openingHours[day]
-        if (open === undefined || close === undefined) {
+        if (!open || !close) {
             parsed[day] = {
                 breaks: []
             }
