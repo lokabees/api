@@ -43,10 +43,10 @@ export const getWithin = async ({ querymen, user, method, params }, res, next) =
         const neLatitude = neCoordinates.latitude
         const neLongitude = neCoordinates.longitude
 
-        console.log("swLatitude:" + swCoordinates.latitude)
-        console.log("swLongitude:" + swCoordinates.longitude)
-        console.log("neLatitude:" + neCoordinates.latitude)
-        console.log("neLongitude:" + neCoordinates.longitude)
+        console.log("swLatitude:" + swLatitude)
+        console.log("swLongitude:" + swLongitude)
+        console.log("neLatitude:" + neLatitude)
+        console.log("neLongitude:" + neLongitude)
 
         if (!swLatitude || !swLongitude || !neLatitude || !neLongitude) {
             res.status(BAD_REQUEST).end()
