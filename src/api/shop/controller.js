@@ -60,12 +60,13 @@ export const getWithin = async ({ querymen, user, method, params }, res, next) =
         querymen.query['address.geometry'] = {
             $geoIntersects: {
                 $geometry: {
-                    type: 'Polygon', coordinates: [ [ [ swLongitude, swLatitude ],
+                    type: 'Polygon', coordinates: [ [
+                        [ swLongitude, swLatitude ],
                         [ swLongitude, neLatitude ],
                         [ neLongitude, neLatitude ],
                         [ neLatitude, neLongitude ],
                         [ swLongitude, swLatitude ] ] ]
-                }
+                },
             }
         }
 
@@ -84,8 +85,6 @@ export const getWithin = async ({ querymen, user, method, params }, res, next) =
 
 export const getNear = async ({ querymen, user, method, params }, res, next) => {
     try {
-        console.log("query: south_west",querymen.query)
-        console.log("query: north_east", querymen.query)
         const { geohash } = params
         if (!geohash) {
             res.status(BAD_REQUEST).end()
