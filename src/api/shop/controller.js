@@ -26,10 +26,66 @@ export const index = async ({ querymen, user, method }, res, next) => {
         errorHandler(res, error)
     }
 }
+export const getWithin = async ({ querymen, user, method, params }, res, next) => {
+    try {
+        const swGeohash = params.sw_geohash
+        const neGeohash = params.ne_geohash
+        console.log("south_west:" + swGeohash)
+        console.log("north_east:" + neGeohash)
+        if (!swGeohash || !neGeohash) {
+            res.status(BAD_REQUEST).end()
+            return
+        }
+        const swCoordinates = decode(swGeohash);
+        const neCoordinates = decode(neGeohash);
+        const swLatitude =  swCoordinates.latitude
+        const swLongitude = swCoordinates.longitude
+        const neLatitude = neCoordinates.latitude
+        const neLongitude = neCoordinates.longitude
+
+        console.log("swLatitude:" + swCoordinates.latitude)
+        console.log("swLongitude:" + swCoordinates.longitude)
+        console.log("neLatitude:" + neCoordinates.latitude)
+        console.log("neLongitude:" + neCoordinates.longitude)
+
+        if (!swLatitude || !swLongitude || !neLatitude || !neLongitude) {
+            res.status(BAD_REQUEST).end()
+            return
+        }
+
+        if (user?.role !== 'admin') {
+            querymen.query.published = true
+        }
+
+        querymen.query['address.geometry'] = {
+            $geoIntersects: {
+                $geometry: {
+                    type: 'Polygon', coordinates: [ [ [ swLongitude, swLatitude ],
+                        [ swLongitude, neLatitude ],
+                        [ neLongitude, neLatitude ],
+                        [ neLatitude, neLongitude ],
+                        [ swLongitude, swLatitude ] ] ]
+                }
+            }
+        }
+
+        const shops = await Shop.paginate(querymen, {
+            populate: [{ path: 'author' }],
+            method,
+            user
+        })
+
+        res.status(OK).json(shops)
+
+    }catch (error) {
+        errorHandler(res, error)
+    }
+}
 
 export const getNear = async ({ querymen, user, method, params }, res, next) => {
     try {
-        
+        console.log("query: south_west",querymen.query)
+        console.log("query: north_east", querymen.query)
         const { geohash } = params
         if (!geohash) {
             res.status(BAD_REQUEST).end()

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { addAuthor } from 's/request'
-import { create, index, show, update, destroy, getCategories, getNear, getProducts } from './controller'
+import { create, index, show, update, destroy, getCategories, getNear, getWithin, getProducts } from './controller'
 import { body } from 'express-validator'
 export Shop, { schema } from './model'
 // meh
@@ -185,6 +185,41 @@ router.get('/', query(), index)
  *          description: Oh boi
  */
 router.get('/near/:geohash', query(), getNear)
+
+/**
+ * @swagger
+ * path:
+ *  /api/shops/within:
+ *    get:
+ *      summary: Get shops within south west geohash and north east geohash
+ *      tags: [Shops]
+ *      security:
+ *        - jwtSessionToken: []
+ *      parameters:
+ *        - in: params
+ *          name: sw_geohash
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: south west geohash of the coordinates
+ *        - in: params
+ *          name: ne_geohash
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: north east geohash of the coordinates
+ *      responses:
+ *        "200":
+ *          description: A shop schema array (fields depend on the ACL)
+ *        "403":
+ *          description: Missing permissions
+ *        "400":
+ *          description: Invalid coordinates
+ *        "500":
+ *          description: Oh boi
+ */
+router.get('/within/:sw_geohash/:ne_geohash', query(), getWithin)
+
 // TODO: Pagination docs
 /**
  * @swagger
