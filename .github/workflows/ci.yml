@@ -30,11 +30,3 @@ jobs:
       run: yarn install
     - name: run Tests
       run: yarn run test --coverage
-
-    - name: Setup sonarqube
-      uses: warchant/setup-sonar-scanner@v1
-    - name: Run Sonar analysis
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-      run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_API_KEY }}
