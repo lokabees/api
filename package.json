@@ -13,7 +13,7 @@
 		"heroku-postbuild": "npm run build",
 		"start": "node .",
 		"serve": "node dist/server",
-		"test": "./node_modules/jest/bin/jest.js --detectOpenHandles",
+		"test": "node ./node_modules/jest/bin/jest.js --detectOpenHandles",
 		"test:coverage": "yarn run test --coverage",
 		"generate": "plop"
 	},
