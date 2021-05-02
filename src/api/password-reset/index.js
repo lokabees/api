@@ -1,5 +1,5 @@
 import { Router } from 'express'
-export PasswordReset, { schema } from './model'
+import PasswordReset, { schema } from './model'
 import { body } from 'express-validator'
 import { expressValidatorErrorChain, onlyAllowMatched } from 's/validator'
 import { passwordValidator } from '~/utils/validator'

@@ -54,9 +54,9 @@ router.post(
     addAuthor({ required: true, addBody: true }),
     addShop({ required: true, addBody: true }),
     [
-        body('title').exists().isString().notEmpty(),
-        body('description').exists().isString().notEmpty(),
-        body('category').exists().isString().notEmpty(),
+        body('title').exists().isString().trim().notEmpty().escape(),
+        body('description').exists().isString().trim().notEmpty().escape(),
+        body('category').exists().isString().trim().notEmpty().escape(),
         body('shop').exists(),
         body('author').exists(),
         body('picture')
@@ -166,11 +166,11 @@ router.put('/:id',
     addAuthor({ required: true, addBody: true }),
     addShop({ required: true, addBody: true }),
     [
-        body('title').optional().isString().notEmpty(),
-        body('description').optional().isString().notEmpty(),
+        body('title').optional().isString().trim().notEmpty().escape(),
+        body('description').optional().isString().trim().notEmpty().escape(),
         body('shop').exists(),
         body('author').exists(),
-        body('category').optional().isString().notEmpty(),
+        body('category').optional().isString().trim().escape().notEmpty(),
         body('picture')
             .optional()
             .custom((value, { req, location, path }) => {

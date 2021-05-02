@@ -21,7 +21,7 @@ const router = new Router()
  *           name: q
  *           schema:
  *             type: string
- *           description: 'The search string. Preffered Format: Street Nr, Postcode City.'
+ *           description: 'The search string. Preferred Format: Street Nr, Postcode City.'
  *      responses:
  *        "200":
  *          description: Suggestions

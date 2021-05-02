@@ -202,7 +202,7 @@ router.post(
     '/',
     masterman(),
     [
-        body('name').exists().isString().notEmpty(),
+        body('name').exists().isString().trim().notEmpty().escape(),
         body('email').exists().isEmail(),
         body('newsletter').optional().isBoolean(),
         body('password')
@@ -254,7 +254,7 @@ router.post(
  */
 router.put('/:id', 
     [
-        body('name').optional().isString().notEmpty(),
+        body('name').optional().isString().trim().notEmpty().escape(),
         body('newsletter').optional().isBoolean()
     ],
     onlyAllowMatched,
