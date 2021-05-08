@@ -205,6 +205,7 @@ router.post(
         body('name').exists().isString().trim().notEmpty().escape(),
         body('email').exists().isEmail(),
         body('newsletter').optional().isBoolean(),
+        body('tos_confirmation').exists({ checkFalsy: true }).isBoolean(),
         body('password')
             .exists()
             .matches(passwordValidator)
