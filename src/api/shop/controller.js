@@ -150,9 +150,12 @@ export const show = async ({ params: { id }, method, user }, res, next) => {
 }
 
 // Get all
-export const getProducts = async ({ params: { id}, querymen, user, method }, res, next) => {
+export const getProducts = async ({ params: { id }, querymen, user, method }, res, next) => {
     try {
-        const shop = await Shop.findById(id)
+        // id could be _id or slug
+        const shop = isObjectId(id) ? 
+            await Shop.findById(id) :
+            await Shop.findOne({ slug: id })
         if (!shop || !shop.published && !Shop.isOwner(shop, user)) {
             res.status(NOT_FOUND).end()
             return
@@ -184,7 +187,10 @@ export const create = async ({ body, method, user }, res, next) => {
 // Put
 export const update = async ({ body, user, method, params: { id } }, res, next) => {
     try {
-        const shop = await Shop.findById(id).populate('author')
+        // id could be _id or slug
+        const shop = isObjectId(id) ? 
+            await Shop.findById(id).populate('author') :
+            await Shop.findOne({ slug: id }).populate('author')
 
         if (!shop) {
             res.status(NOT_FOUND).end()
@@ -207,7 +213,10 @@ export const update = async ({ body, user, method, params: { id } }, res, next) 
 // Delete
 export const destroy = async ({ params: { id }, user }, res, next) => {
     try {
-        const shop = await Shop.findById(id)
+        // id could be _id or slug
+        const shop = isObjectId(id) ? 
+            await Shop.findById(id):
+            await Shop.findOne({ slug: id })
 
         if (!shop) {
             res.status(NOT_FOUND).end()

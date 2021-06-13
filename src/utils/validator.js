@@ -110,10 +110,12 @@ export const parseOpeningHours = (openingHours) => {
             breaks: []
         }
         openingHours[day]?.breaks.forEach((br) => {
-            parsed[day].breaks.push({
-                from: HHMMtoMinutes(br.from),
-                to: HHMMtoMinutes(br.to)
-            })
+            if (br.to && br.from) {
+                parsed[day].breaks.push({
+                    from: HHMMtoMinutes(br.from),
+                    to: HHMMtoMinutes(br.to)
+                })
+            }
         })
     }
     return parsed
